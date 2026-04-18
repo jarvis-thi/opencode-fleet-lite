@@ -47,11 +47,10 @@ fi
 echo ""
 echo "=== Fleet Started ==="
 echo ""
-echo "  Apex:     tmux attach -t apex"
-echo "  Forge:    tmux attach -t forge     (started by Apex on first interaction)"
-echo "  Prism:    tmux attach -t prism     (started by Apex on first interaction)"
+echo "  Talk to the fleet (tmux):  tmux attach -t apex   # Apex is the lead — your interface"
+echo "  Forge / Prism:           started by Apex when needed (you normally stay in apex)"
 if [[ -n "${TELEGRAM_BOT_TOKEN:-}" ]]; then
-  echo "  Telegram: tmux attach -t fleet-telegram"
+  echo "  Telegram:                messages go to Apex (bridge session: fleet-telegram)"
 fi
 echo ""
 echo "  Stop:     ./stop.sh"
