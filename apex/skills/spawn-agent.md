@@ -110,7 +110,7 @@ declare -A ROSTER=(
   [apex]="apex"
   [forge]="forge"
   [prism]="prism"
-  [mnemosyne]="mnemosyne"
+  [vikki]="vikki"
   # ... include any other agents that exist
 )
 ```
@@ -137,7 +137,7 @@ tmux send-keys -t scout Enter
 
 ### 9. Update ALL existing agents' rosters
 
-For EVERY existing agent (**forge**, **prism**, **mnemosyne**, and any others), update their `comms/roster.sh` to include the new agent. Also update **your own** `apex/comms/roster.sh`.
+For EVERY existing agent (**forge**, **prism**, and any others), update their `comms/roster.sh` to include the new agent. Also update **your own** `apex/comms/roster.sh`.
 
 **Critical:** `apex/comms/roster.sh` is the **source of truth** for **`scripts/ensure-fleet-up.sh`** and Apex’s **every user message** fleet sweep. If the new peer is not in **Apex’s** `ROSTER`, they will **not** be auto-started when DOWN.
 
@@ -153,12 +153,12 @@ Also update the Fleet Roster table in your own AGENT.md to include the new agent
 Send a welcome message to the new agent introducing it to the fleet:
 
 ```bash
-comms/send.sh scout "INFO | Welcome to the fleet. You are Scout, our security auditor. The fleet currently has: Apex (strategist), Forge (builder), Prism (analyst), Mnemosyne (wiki memory), and you. Read your AGENT.md for your full brief. Report to Apex when you are ready. END"
+comms/send.sh scout "INFO | Welcome to the fleet. You are Scout, our security auditor. The fleet currently has: Apex (strategist), Forge (builder), Prism (analyst), and you. If the optional wiki agent Vikki is enabled, consult her for durable memory. Read your AGENT.md for your full brief. Report to Apex when you are ready. END"
 ```
 
 ### 11. (Optional) Stub the fleet wiki
 
-If **`mnemosyne/`** exists in the fleet, send Mnemosyne a short **REQUEST** to add `projects/<new-agent>/` (or link the role from **`memory/fleet-wiki/00-MOC-Fleet.md`**). See **`apex/skills/wiki-memory.md`**.
+If **`vikki/`** exists in the fleet, send Vikki a short **REQUEST** to add `projects/<new-agent>/` (or link the role from **`memory/fleet-wiki/00-MOC-Fleet.md`**). See **`apex/skills/wiki-memory.md`**.
 
 ### 12. Report to the user
 

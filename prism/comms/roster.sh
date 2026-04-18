@@ -4,5 +4,4 @@
 declare -A ROSTER=(
   [apex]="apex"
   [forge]="forge"
-  [mnemosyne]="mnemosyne"
 )

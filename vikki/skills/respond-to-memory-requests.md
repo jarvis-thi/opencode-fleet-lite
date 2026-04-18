@@ -3,7 +3,7 @@
 Peers send:
 
 ```
-[Apex to Mnemosyne] REQUEST | Summarise project X status for planning. END
+[Apex to Vikki] REQUEST | Summarise project X status for planning. END
 ```
 
 You **ACK** fast, then either:

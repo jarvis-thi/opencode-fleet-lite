@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Mnemosyne -> Agent message sender
+# Vikki -> Agent message sender
 # Usage: ./send.sh <agent> "message"
 # Injection: temp file + tmux load-buffer / paste-buffer (portable; avoids set-buffer -t quirks).
 set -euo pipefail
@@ -7,7 +7,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/roster.sh"
 
-SENDER="Mnemosyne"
+SENDER="Vikki"
 TARGET="$1"
 MESSAGE="$2"
 

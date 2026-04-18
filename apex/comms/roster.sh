@@ -5,5 +5,6 @@
 declare -A ROSTER=(
   [forge]="forge"
   [prism]="prism"
-  [mnemosyne]="mnemosyne"
+  # Optional: Vikki (wiki memory) — add only if you want the vault agent
+  # [vikki]="vikki"
 )

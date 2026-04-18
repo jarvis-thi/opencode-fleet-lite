@@ -1,6 +1,6 @@
 # opencode-fleet-lite
 
-A small **example** drop-in fleet of **OpenCode** agents that work together on your machine (core trio **+** an optional **Mnemosyne** wiki-memory experiment). Configure once, run `./start.sh`, then talk to the fleet in **one** place: **`tmux attach -t apex`**, or **Telegram** if you enable the optional bridge. **Apex** is the lead — Forge, Prism, and any agents you add later coordinate through that node so the fleet can ship work as a team.
+A small **example** drop-in fleet of **OpenCode** agents that work together on your machine (core trio **+** an optional **Vikki** wiki-memory agent). Configure once, run `./start.sh`, then talk to the fleet in **one** place: **`tmux attach -t apex`**, or **Telegram** if you enable the optional bridge. **Apex** is the lead — Forge, Prism, and any agents you add later coordinate through that node so the fleet can ship work as a team.
 
 **KISS — Keep It Simple, Stupid:** coordination is intentionally boring on purpose. Each agent is a **tmux** session; agents reach each other by **paste-buffer injection** — plain text dropped into the peer’s terminal — not a bespoke message bus, not another service to babysit. **That is why this stack is tmux-first:** fewer moving parts, easier to read, trivial to debug in a scrollback.
 
@@ -21,10 +21,10 @@ Four core roles (plus spawns), one mesh: you steer from **Apex**, the rest execu
 | **Apex** | **Strategist & your interface** — breaks down work, delegates, tracks outcomes. **You only attach here** (tmux or Telegram). |
 | **Forge** | **Builder** — ships code, scripts, fixes; reports back when something is done or blocked. |
 | **Prism** | **Analyst** — research, review, structured notes; curates `prism/memory/shared.md` the fleet can read. |
-| **Mnemosyne** | **Wiki & project memory** (optional experiment) — Obsidian-style **`mnemosyne/memory/fleet-wiki/`** (`00-MOC-Fleet.md`, `fleet/`, `projects/<slug>/`); complements Prism’s shared file, does not replace it. |
+| **Vikki** | **Wiki & project memory** (optional) — Obsidian-style **`vikki/memory/fleet-wiki/`** (`00-MOC-Fleet.md`, `fleet/`, `projects/<slug>/`); complements Prism’s shared file, does not replace it. |
 | **Anyone new** | Ask Apex (e.g. *“add an agent called Scout for security review”*). Apex creates the agent using **`/spawn-agent`** — folders, `AGENT.md`, tmux session, roster updates — you get a new node in the fleet without manual scaffolding. |
 
-Forge, Prism, and Mnemosyne come up when Apex runs the roster sweep (`ensure-fleet-up.sh`); you stay in **Apex** unless you *want* to peek at another pane. Optional **Telegram** still lands on Apex first.
+Forge and Prism come up when Apex runs the roster sweep (`ensure-fleet-up.sh`); you stay in **Apex** unless you *want* to peek at another pane. **Vikki is opt-in** — if you want the wiki-memory agent, ask Apex to add Vikki to the roster (setup lives in `vikki/SETUP.md`). Optional **Telegram** still lands on Apex first.
 
 **Who talks to whom**
 
@@ -47,7 +47,7 @@ You only message **Apex**. Inside the fleet, **any agent can message any agent**
           delegate     delegate     spawn       
               /          |            \         
         +----------+  +----------+  +----------+
-        |  FORGE   |  |  PRISM   |  | MNEMOSYNE|
+        |  FORGE   |  |  PRISM   |  |  VIKKI   |
         |  build   |  | research |  | wiki/mem |
         +----------+  +----------+  +----------+
              \            |            /        
@@ -67,27 +67,18 @@ flowchart TB
   APEX -->|delegate| PRISM["PRISM — research"]
   APEX -->|spawn| MORE["more agents…"]
   FORGE <--> PRISM
-  PRISM <--> MNEM["MNEMOSYNE — wiki"]
-  FORGE <--> MNEM
-  APEX -->|consult| MNEM
+  PRISM <--> VIKKI["VIKKI — wiki (optional)"]
+  FORGE <--> VIKKI
+  APEX -->|consult| VIKKI
 ```
 
 All comms are **tmux paste-buffer** injection — no extra services, HTTP, or queues.
 
 ---
 
-## Memory (experimental): Mnemosyne
+## Optional: Vikki (wiki memory)
 
-This repo ships a fourth agent — **Mnemosyne** — as an **optional experiment** in **fleet + project memory**. It does **not** replace Prism’s `prism/memory/shared.md` (quick shared notices); it **adds** a structured wiki:
-
-| Surface | Owner | Role |
-|---------|-------|------|
-| `prism/memory/shared.md` | Prism | Short, analyst-curated fleet notices |
-| `mnemosyne/memory/fleet-wiki/` | Mnemosyne | Obsidian-style vault: **`00-MOC-Fleet.md`**, **`fleet/`**, **`projects/<slug>/`**, `[[wikilinks]]` |
-
-**Apex** follows **`apex/skills/wiki-memory.md`** for when to **`/delegate mnemosyne`** vs updating `shared.md`. **Forge** may pull project context from the vault; **Prism** may **REQUEST** promotion of durable narrative into the vault. Same **tmux** transport; Mnemosyne is on every **`comms/roster.sh`** and is started by **`apex/scripts/ensure-fleet-up.sh`** like other non–forge/prism agents (plain `opencode` in `mnemosyne/`).
-
-If you do not want this experiment, remove **`mnemosyne`** from **`apex/comms/roster.sh`** and delete the `mnemosyne/` tree — the core three-agent fleet still works.
+Vikki is **opt-in**. Details and enable/disable steps are at the **bottom** of this README (and in `vikki/SETUP.md`).
 
 ---
 
@@ -120,7 +111,7 @@ Goal: **clone → `./start.sh` → attach to Apex** — no manual env file step.
 
    On first run, **`start.sh` creates `.env` from `.env.example`** if `.env` is missing — you do **not** copy anything by hand. Local use needs no edits; the file is there for when you add Telegram later.
 
-   This launches **Apex** in tmux. **`start.sh` does not start Forge, Prism, or Mnemosyne** — Apex runs **`scripts/ensure-fleet-up.sh` on each user message** so roster peers (including Mnemosyne) get a tmux session before delegating.
+  This launches **Apex** in tmux. **`start.sh` does not start Forge or Prism** — Apex runs **`scripts/ensure-fleet-up.sh` on each user message** so roster peers get a tmux session before delegating. (Optional peers like Vikki only come up if added to the roster.)
 
 3. **Talk to Apex**
 
@@ -165,7 +156,7 @@ You can use **Telegram-only** for chat if Apex is already running — no tmux at
 
 ```bash
 ./status.sh   # which tmux sessions are up
-./stop.sh     # graceful prompt, then stops apex / forge / prism / mnemosyne / fleet-telegram
+./stop.sh     # graceful prompt, then stops apex / roster peers / fleet-telegram
 ```
 
 ---
@@ -178,7 +169,7 @@ fleet/
   apex/      # Lead agent — AGENT.md, skills, scripts/ensure-fleet-up.sh, memory, comms
   forge/     # Builder
   prism/     # Analyst + shared knowledge file
-  mnemosyne/ # Optional — fleet wiki + per-project memory (experiment)
+  vikki/     # Optional — fleet wiki + per-project memory
   telegram/  # Optional bridge (Grammy) + MCP for replies
 ```
 
@@ -192,7 +183,7 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 
 **Fleet-wide (Prism):** **`prism/memory/shared.md`** — lightweight notice board.
 
-**Structured wiki (special experiment):** **`mnemosyne/memory/fleet-wiki/`** — Mnemosyne’s Obsidian-style graph; see [Memory (experimental): Mnemosyne](#memory-experimental-mnemosyne).
+**Structured wiki (optional):** **`vikki/memory/fleet-wiki/`** — Vikki’s Obsidian-style graph; see [Optional: Vikki (wiki memory)](#optional-vikki-wiki-memory).
 
 **Example, not scripture.** If you prefer a different memory pattern — **ask Apex** to retune **`skills/`** across the fleet.
 
@@ -212,7 +203,7 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 | **A brand-new node** | **`/spawn-agent`** — new folder, tmux session, roster (see `apex/skills/spawn-agent.md`). Optional wiki stub via **`apex/skills/wiki-memory.md`**. |
 | **Evolve the fleet you have** | **`/tune-fleet`** — Apex updates agents in place; see `apex/skills/tune-fleet.md`. |
 | **An agent is DOWN / comms fail** | **`/recover-fleet`** or **`/recover-agent <name>`** — status, `tmux` restart lines, verification; see `apex/skills/recover-fleet.md`. |
-| **Keep the fleet warm** | On **every user message**, Apex runs **`apex/scripts/ensure-fleet-up.sh`** (driven by **`apex/comms/roster.sh`**) so **Forge**, **Prism**, **Mnemosyne** (if listed), and **every spawned peer** in the roster get a tmux session before comms. |
+| **Keep the fleet warm** | On **every user message**, Apex runs **`apex/scripts/ensure-fleet-up.sh`** (driven by **`apex/comms/roster.sh`**) so **Forge**, **Prism**, **Vikki (if enabled)**, and **every spawned peer** in the roster get a tmux session before comms. |
 
 **Models and tone at the engine level** still come from **your** OpenCode config. **Persona and fleet behavior** come from **`AGENT.md` + skills** — and Apex is the partner for rolling those forward.
 
@@ -259,7 +250,7 @@ This repo is a **template for building many agents** that cooperate. You do **no
 | **`skills/*.md`** | Per agent | Playbooks: slash-style habits (`/delegate`, `/review`, …), checklists, recovery steps. Iterate here without rewriting the whole prompt. |
 | **OpenCode / LLM config** | Outside repo | Model, temperature, tools — not pinned in this tree. |
 
-Adding a specialist: **`/spawn-agent`** (Apex) or copy an existing agent tree, rewrite **Identity + skills**, update **every** `comms/roster.sh`, and add the peer to **`apex/comms/roster.sh`** so **`ensure-fleet-up.sh`** starts them. Optional: **`/delegate mnemosyne`** to stub `fleet-wiki/projects/<slug>/` (see [Memory (experimental): Mnemosyne](#memory-experimental-mnemosyne)).
+Adding a specialist: **`/spawn-agent`** (Apex) or copy an existing agent tree, rewrite **Identity + skills**, update **every** `comms/roster.sh`, and add the peer to **`apex/comms/roster.sh`** so **`ensure-fleet-up.sh`** starts them. Optional: enable Vikki and **`/delegate vikki`** to stub `fleet-wiki/projects/<slug>/` (see [Optional: Vikki (wiki memory)](#optional-vikki-wiki-memory)).
 
 *See also [Customization — talk to Apex](#customization--talk-to-apex) for `/tune-fleet` and fleet-wide retunes.*
 
@@ -284,7 +275,7 @@ Apex is the **officer**; others are **specialists**. **Do/don’t** is written i
 |--------|-------------|
 | **Role** | Ships code and fixes; short **REPORT**s back when done or blocked. |
 | **Voice** | Terse, action-first — “doing X, result Y.” |
-| **Differentiator** | Explicit boundary: **does not** run fleet ops or wiki; may **REQUEST** Prism or Mnemosyne for context. |
+| **Differentiator** | Explicit boundary: **does not** run fleet ops or wiki; may **REQUEST** Prism or Vikki (if enabled) for context. |
 | **Skills** | `forge/skills/fleet-comms`, `forge/skills/report` — minimal; most effort is in the work product. |
 
 ---
@@ -295,21 +286,14 @@ Apex is the **officer**; others are **specialists**. **Do/don’t** is written i
 |--------|-------------|
 | **Role** | Research, code review, structured findings; owns **`prism/memory/shared.md`** (fast, broadcast-friendly notices). |
 | **Voice** | Evidence-led, headings and bullets; severity labels on reviews. |
-| **Differentiator** | **Shared vs wiki:** Prism drops **session-fast** knowledge; **Mnemosyne** owns **linked, long-lived** narrative in `mnemosyne/memory/fleet-wiki/`. |
+| **Differentiator** | **Shared vs wiki:** Prism drops **session-fast** knowledge; **Vikki** (if enabled) owns **linked, long-lived** narrative in `vikki/memory/fleet-wiki/`. |
 | **Skills** | `prism/skills/fleet-comms`, `prism/skills/review` — depth where Forge is breadth. |
 
 ---
 
-### Mnemosyne — wiki & project memory (experiment)
+### Vikki — wiki & project memory (optional)
 
-| Aspect | What we did |
-|--------|-------------|
-| **Role** | Librarian: **Obsidian-style** vault under `memory/fleet-wiki/`, per-project stubs, MOC — answers **REQUEST**s to ingest or summarise. |
-| **Voice** | Neutral, archival, wikilink-friendly. |
-| **Differentiator** | Does **not** replace `shared.md`; **graduates** durable truth from chaos. |
-| **Skills** | `mnemosyne/skills/fleet-wiki`, `mnemosyne/skills/respond-to-memory-requests`. |
-
----
+See **Optional: Vikki (wiki memory)** at the bottom of this README for enable/disable and vault layout.
 
 ### Example spawn: **Scout** (security) — not shipped in this repo
 
@@ -325,6 +309,30 @@ If you **`/spawn-agent scout "…"`**, Apex creates `scout/` mirroring Forge/Pri
 - **Mesh, not hierarchy** — any agent can ping any agent; Apex stays the **human** front door.
 
 That is the **fleet army pattern**: cheap to fork, easy to read, no magic runtime beyond tmux paste and discipline in markdown.
+
+---
+
+## Optional: Vikki (wiki memory)
+
+Vikki is the fleet’s **wiki-memory agent**. She owns an Obsidian-style vault under **`vikki/memory/fleet-wiki/`**:
+
+| Surface | Owner | Role |
+|---------|-------|------|
+| `prism/memory/shared.md` | Prism | Fast notices (this week) |
+| `vikki/memory/fleet-wiki/` | Vikki | Durable, linked truth (MOC, `fleet/`, `projects/<slug>/`) |
+
+### Enabling Vikki
+
+Vikki is **not** in the default roster. If you want her, ask **Apex** to add Vikki (Apex updates rosters so she auto-starts and peers can message her). The full checklist is self-contained inside the Vikki folder:
+
+- `vikki/SETUP.md`
+- `vikki/AGENT.md` + `vikki/skills/*` + `vikki/memory/fleet-wiki/*`
+
+Once enabled, delegate durable notes like:
+
+```
+/delegate vikki "Ingest ADR: <title>. Link from fleet MOC and projects/<slug>/."
+```
 
 ---
 

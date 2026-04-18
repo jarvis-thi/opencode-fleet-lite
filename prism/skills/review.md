@@ -33,4 +33,4 @@ Perform a structured code review.
    ```
 4. Send summary to Apex via `comms/send.sh apex "REVIEW | <summary>"`.
 5. If findings should be visible **this week** to everyone, update `memory/shared.md` briefly.
-6. If findings are **durable** (ADRs, cross-session narrative), **REQUEST** Mnemosyne to fold them into `../mnemosyne/memory/fleet-wiki/` — do not duplicate large write-ups in both places.
+6. If findings are **durable** (ADRs, cross-session narrative) and Vikki is enabled, **REQUEST** Vikki to fold them into `../vikki/memory/fleet-wiki/` — do not duplicate large write-ups in both places.
