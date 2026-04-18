@@ -1,18 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+FLEET_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
+source "$FLEET_DIR/apex/comms/roster.sh"
+
 echo "=== OpenCode Fleet Lite Status ==="
 echo ""
 printf "  %-20s %s\n" "AGENT" "STATUS"
 printf "  %-20s %s\n" "----" "------"
 
-for session in apex forge prism fleet-telegram; do
-  if tmux has-session -t "$session" 2>/dev/null; then
-    status="UP"
+if tmux has-session -t apex 2>/dev/null; then
+  apex_st="UP"
+else
+  apex_st="DOWN"
+fi
+printf "  %-20s %s\n" "apex" "$apex_st"
+
+for name in $(printf '%s\n' "${!ROSTER[@]}" | sort); do
+  sess="${ROSTER[$name]}"
+  if tmux has-session -t "$sess" 2>/dev/null; then
+    st="UP"
   else
-    status="DOWN"
+    st="DOWN"
   fi
-  printf "  %-20s %s\n" "$session" "$status"
+  printf "  %-20s %s\n" "$name ($sess)" "$st"
 done
+
+if tmux has-session -t fleet-telegram 2>/dev/null; then
+  tg="UP"
+else
+  tg="DOWN"
+fi
+printf "  %-20s %s\n" "fleet-telegram" "$tg"
 
 echo ""

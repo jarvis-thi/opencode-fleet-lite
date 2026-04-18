@@ -158,7 +158,7 @@ You can use **Telegram-only** for chat if Apex is already running — no tmux at
 ```
 fleet/
   start.sh   stop.sh   status.sh   .env
-  apex/      # Lead agent — AGENT.md, skills (spawn-agent, tune-fleet, recover-fleet, …), memory, comms
+  apex/      # Lead agent — AGENT.md, skills, scripts/ensure-fleet-up.sh, memory, comms
   forge/     # Builder
   prism/     # Analyst + shared knowledge file
   telegram/  # Optional bridge (Grammy) + MCP for replies
@@ -192,6 +192,7 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 | **A brand-new node** | **`/spawn-agent`** — new folder, tmux session, roster (see `apex/skills/spawn-agent.md`). |
 | **Evolve the fleet you have** | **`/tune-fleet`** — Apex updates agents in place; see `apex/skills/tune-fleet.md`. |
 | **An agent is DOWN / comms fail** | **`/recover-fleet`** or **`/recover-agent <name>`** — status, `tmux` restart lines, verification; see `apex/skills/recover-fleet.md`. |
+| **Keep the fleet warm** | On **every user message**, Apex runs **`apex/scripts/ensure-fleet-up.sh`** (driven by **`apex/comms/roster.sh`**) so **Forge**, **Prism**, and **every spawned peer** in the roster get a tmux session before comms. |
 
 **Models and tone at the engine level** still come from **your** OpenCode config. **Persona and fleet behavior** come from **`AGENT.md` + skills** — and Apex is the partner for rolling those forward.
 

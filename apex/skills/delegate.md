@@ -14,7 +14,7 @@ Delegate a task to a fleet agent.
 ```
 
 ## Behaviour
-1. Validate the target agent exists in the roster (forge, prism).
+1. You should already have run **`bash scripts/ensure-fleet-up.sh`** this user turn (`AGENT.md`). Validate the target exists in **`comms/roster.sh`**.
 2. Compose a structured message:
    ```
    [Apex to <Agent>] REQUEST | <task description> END

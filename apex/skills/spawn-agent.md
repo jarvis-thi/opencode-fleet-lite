@@ -136,14 +136,16 @@ tmux send-keys -t scout Enter
 
 ### 9. Update ALL existing agents' rosters
 
-For EVERY existing agent (forge, prism, and any others), update their `comms/roster.sh` to include the new agent. Also update your own roster.
+For EVERY existing agent (forge, prism, and any others), update their `comms/roster.sh` to include the new agent. Also update **your own** `apex/comms/roster.sh`.
+
+**Critical:** `apex/comms/roster.sh` is the **source of truth** for **`scripts/ensure-fleet-up.sh`** and Apex’s **every user message** fleet sweep. If the new peer is not in **Apex’s** `ROSTER`, they will **not** be auto-started when DOWN.
 
 For each agent's roster file, add the new entry:
 ```
   [scout]="scout"
 ```
 
-Also update the Fleet Roster table in your own AGENT.md to include the new agent.
+Also update the Fleet Roster table in your own AGENT.md to include the new agent (optional for humans; liveness follows `roster.sh`).
 
 ### 10. Welcome the new agent
 
