@@ -29,6 +29,19 @@ fi
 
 export FLEET_DIR
 
+# Prerequisites — fail fast with a clear message (avoids "no server / no sessions" when the
+# session dies because opencode was missing or exited immediately).
+if ! command -v tmux >/dev/null 2>&1; then
+  echo "[error] tmux not found. Install it first (macOS: brew install tmux)" >&2
+  exit 1
+fi
+if ! command -v opencode >/dev/null 2>&1; then
+  echo "[error] opencode not found in PATH." >&2
+  echo "        Install OpenCode from https://github.com/sst/opencode and ensure the CLI is on your PATH." >&2
+  echo "        Quick check: run  opencode --version  in this terminal, then ./start.sh again." >&2
+  exit 1
+fi
+
 # Start Apex
 if tmux has-session -t apex 2>/dev/null; then
   echo "[apex] Already running -- skipping"
@@ -37,6 +50,12 @@ else
   tmux new-session -d -s apex -c "$FLEET_DIR/apex" "opencode"
   echo "[apex] Waiting for boot..."
   sleep 3
+  if ! tmux has-session -t apex 2>/dev/null; then
+    echo "[error] Apex tmux session did not stay up." >&2
+    echo "        Usually: opencode crashed or exited immediately (missing auth, bad config)." >&2
+    echo "        Try by hand:  cd \"$FLEET_DIR/apex\" && opencode" >&2
+    exit 1
+  fi
   tmux send-keys -t apex Enter
   echo "[apex] Started"
 fi

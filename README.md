@@ -32,6 +32,8 @@ cd fleet
 tmux attach -t apex
 ```
 
+**Before `./start.sh`:** install **tmux** and **OpenCode** so both `tmux -V` and **`opencode --version`** work in the same terminal you use for the fleet (macOS: `brew install tmux`, then install OpenCode per its docs). If **`opencode` is not on your PATH**, the Apex pane exits straight away, tmux tears down the last session, and the next command moans about **no server / no sessions** — that is almost always “CLI not found or crashed,” not a broken script.
+
 First run creates a `.env` for you. Detach without murdering the session: **Ctrl+B**, then **D**.
 
 Check what’s alive: `./status.sh`. Wind down: `./stop.sh`.
