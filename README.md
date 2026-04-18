@@ -150,7 +150,7 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 
 ---
 
-## Customization
+## Customization — talk to Apex
 
 **Specialists live in `skills/`:** each agent has a `skills/` folder of small markdown playbooks. That is how a generic node becomes a **specialist** — tighter reviews, domain checklists, custom delegation habits — **without** forking OpenCode.
 

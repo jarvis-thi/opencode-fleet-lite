@@ -7,7 +7,7 @@ Evolve **existing** agents into specialists — update `AGENT.md`, **skills**, a
 - User asks to make Forge / Prism / another agent **more of a specialist** (domain, tone, checks).
 - User wants **new skills** (new `*.md` under an agent’s `skills/`).
 - User wants **self-improvement** wiring: what to log after a task, when to update `prism/memory/shared.md`, periodic retros, etc.
-- User references the README **Customization** section (“work with Apex to tune the fleet”).
+- User references the README **Customization — talk to Apex** section.
 
 ## Principles
 
