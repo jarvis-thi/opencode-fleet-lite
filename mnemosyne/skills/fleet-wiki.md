@@ -2,16 +2,17 @@
 
 ## Layout
 
-- **Fleet index:** `memory/wiki/FLEET.md`
-- **Per project:** `memory/wiki/projects/<slug>/` with `overview.md`, optional `decisions.md`, `phases.md`, `open-questions.md`
+- **Map of content:** `memory/fleet-wiki/00-MOC-Fleet.md`
+- **Fleet-wide topics:** `memory/fleet-wiki/fleet/`
+- **Per project:** `memory/fleet-wiki/projects/<slug>/` — start from `projects/_template.md`
 
 Use wikilinks `[[Page]]` where helpful (Obsidian-compatible plain text).
 
 ## When to create or update
 
 - Apex or another agent **REQUEST**s a page for a new initiative
-- A project **phase** changes — update `phases.md`
-- Something should be **remembered fleet-wide** — add to FLEET or a project file, not duplicated in three agents’ private logs
+- A project **phase** changes — update the project note
+- Something should be **remembered fleet-wide** — add under `fleet/` or the MOC, not duplicated in three agents’ private logs
 
 ## Style
 

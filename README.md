@@ -190,7 +190,9 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 
 **Per agent:** each node has a `memory/` folder — **`bootstrap.md`**, **`handoff.md`**, **`log.md`**. The agents write these as they work.
 
-**Fleet-wide (Prism):** **`prism/memory/shared.md`** — lightweight notice board (see [Memory (experimental): Mnemosyne](#memory-experimental-mnemosyne) for the structured wiki add-on).
+**Fleet-wide (Prism):** **`prism/memory/shared.md`** — lightweight notice board.
+
+**Structured wiki (special experiment):** **`mnemosyne/memory/fleet-wiki/`** — Mnemosyne’s Obsidian-style graph; see [Memory (experimental): Mnemosyne](#memory-experimental-mnemosyne).
 
 **Example, not scripture.** If you prefer a different memory pattern — **ask Apex** to retune **`skills/`** across the fleet.
 
@@ -207,10 +209,10 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 | **Sharpen an agent** | Refine `AGENT.md`, add or rewrite **`skills/*.md`**, align voice and responsibilities (Forge as release engineer, Prism as threat analyst, …). |
 | **New capabilities** | Create new skill files under the right agent’s `skills/`, wire them into how that agent should behave. |
 | **Improvement loops** | Set up habits: what to log after a task, when to update **`prism/memory/shared.md`**, retros, “what we learned” nudges — encoded as skills + memory, not buzzwords. |
-| **A brand-new node** | **`/spawn-agent`** — new folder, tmux session, roster (see `apex/skills/spawn-agent.md`). |
+| **A brand-new node** | **`/spawn-agent`** — new folder, tmux session, roster (see `apex/skills/spawn-agent.md`). Optional wiki stub via **`apex/skills/wiki-memory.md`**. |
 | **Evolve the fleet you have** | **`/tune-fleet`** — Apex updates agents in place; see `apex/skills/tune-fleet.md`. |
 | **An agent is DOWN / comms fail** | **`/recover-fleet`** or **`/recover-agent <name>`** — status, `tmux` restart lines, verification; see `apex/skills/recover-fleet.md`. |
-| **Keep the fleet warm** | On **every user message**, Apex runs **`apex/scripts/ensure-fleet-up.sh`** (driven by **`apex/comms/roster.sh`**) so **Forge**, **Prism**, and **every spawned peer** in the roster get a tmux session before comms. |
+| **Keep the fleet warm** | On **every user message**, Apex runs **`apex/scripts/ensure-fleet-up.sh`** (driven by **`apex/comms/roster.sh`**) so **Forge**, **Prism**, **Mnemosyne** (if listed), and **every spawned peer** in the roster get a tmux session before comms. |
 
 **Models and tone at the engine level** still come from **your** OpenCode config. **Persona and fleet behavior** come from **`AGENT.md` + skills** — and Apex is the partner for rolling those forward.
 

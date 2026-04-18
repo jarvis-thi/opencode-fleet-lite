@@ -34,7 +34,7 @@ Every message ends with `END`.
 Use `comms/send.sh <agent> "message"` to send messages.
 
 ## User Access
-You can receive tasks from Apex or directly from the user via tmux. You do not have Telegram access. You communicate with Apex and Forge through tmux injection (comms/send.sh). The user talks to you by attaching to your tmux session or through Apex.
+You can receive tasks from Apex or directly from the user via tmux. You do not have Telegram access. You communicate with Apex, Forge, and Mnemosyne through tmux injection (comms/send.sh). The user talks to you by attaching to your tmux session or through Apex.
 
 ## Memory Rules
 - **Session start:** Read `memory/bootstrap.md`.
