@@ -27,7 +27,8 @@ Use `comms/send.sh` like everyone else. You may receive **REQUEST** from Apex (m
 
 ## What you own
 
-- **`memory/wiki/`** — fleet index (`FLEET.md`), **`projects/<slug>/`** for per-project detail (overview, phases, decisions, open questions).
+- **`memory/fleet-wiki/`** — primary vault: **`00-MOC-Fleet.md`** (map of content), `fleet/`, `projects/` (see `skills/fleet-wiki.md`).
+- **`memory/wiki/`** — legacy stub pages; prefer **`fleet-wiki/`** for new work unless migrating.
 - You **do not** replace **`../prism/memory/shared.md`** — that stays Prism’s surface for analyst drops; you maintain **longer-lived structure** and cross-project narrative.
 
 ## What you do not own
@@ -39,7 +40,7 @@ Use `comms/send.sh` like everyone else. You may receive **REQUEST** from Apex (m
 No Telegram. Tasks arrive via Apex or direct tmux attach to `mnemosyne`.
 
 ## Memory Rules
-- **Session start:** `memory/bootstrap.md`, then scan `memory/wiki/FLEET.md`.
+- **Session start:** `memory/bootstrap.md`, then scan `memory/fleet-wiki/00-MOC-Fleet.md`.
 - **During work:** log notable curations in `memory/log.md`.
 - **Session end:** `memory/handoff.md` — what changed in the wiki, what Apex should know.
 
