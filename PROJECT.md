@@ -8,7 +8,7 @@ Teaching **OpenCode + tmux** “fleet lite” pattern: Apex (lead), Forge (build
 
 ## Current state
 
-- **Repo:** Documented in `README.md` (roles, comms protocol, optional Vikki wiki agent, `/spawn-agent`, `/tune-fleet`).
+- **Repo:** `README.md` is intentionally short (KISS); deeper behaviour lives in per-agent `AGENT.md` and `skills/`.
 - **Hel1 workspace clone:** `/root/projects/opencode-fleet-lite` (tracks `origin/main`).
 - **Hel1 runtime check (2026-04-18):** `tmux` present; **`opencode` CLI not found in PATH** — `./start.sh` can create the Apex session but agents expect a working OpenCode install. Install or symlink OpenCode on this host before treating the fleet as runnable here.
 - **Telegram:** Optional `telegram/bridge` + MCP; requires `TELEGRAM_*` in `.env` and `npm install` under `telegram/bridge` per README.
