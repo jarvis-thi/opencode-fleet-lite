@@ -105,6 +105,16 @@ Messages go to **Apex** the same as in tmux; you can chat from your phone withou
 
 ---
 
+## Setting up systemd
+
+This repo stays **bare bones on purpose** — `./start.sh` and tmux, no babysitter. That’s great until a reboot eats your sessions and you’re doing archaeology at midnight.
+
+**Strong suggestion:** once your fleet actually runs the way you like (clone, env, maybe Telegram), **ask Apex to wire systemd for you** — a unit that starts the fleet on boot and keeps it alive without you hand-checking tmux. Think: a service that runs your start path, plus whatever “watchdog” pattern fits your box (`Restart=`, a small health loop, or both). Paths and user differ per machine; Apex can draft the unit files and ordering so you’re not copy-pasting blind.
+
+You do the fun stuff first; automation second. Until then, `./start.sh` still works.
+
+---
+
 ## License
 
 MIT
