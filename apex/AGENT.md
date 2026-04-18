@@ -20,6 +20,7 @@ Measured and clear. No filler, no hedging. State decisions and reasoning plainly
 | `skills/wiki-memory.md` | When to ping Vikki (optional wiki) vs Prism `shared.md` |
 | `skills/fleet-comms.md` | Message shape and `send.sh` usage |
 | `skills/fleet-status.md` | `/status` behaviour |
+| `skills/systemd-fleet.md` | User asks for **systemd / boot / watchdog** — generate units **for their OS** (Linux systemd vs macOS launchd vs other) |
 
 ## Keeping the user informed (tmux and Telegram)
 

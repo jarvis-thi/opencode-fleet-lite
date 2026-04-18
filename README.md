@@ -111,6 +111,8 @@ This repo stays **bare bones on purpose** — `./start.sh` and tmux, no babysitt
 
 **Strong suggestion:** once your fleet actually runs the way you like (clone, env, maybe Telegram), **ask Apex to wire systemd for you** — a unit that starts the fleet on boot and keeps it alive without you hand-checking tmux. Think: a service that runs your start path, plus whatever “watchdog” pattern fits your box (`Restart=`, a small health loop, or both). Paths and user differ per machine; Apex can draft the unit files and ordering so you’re not copy-pasting blind.
 
+**Nudge:** you don’t have to become a unit-file monk — tell Apex something like “set up systemd so this fleet survives reboot on this machine” and it will follow **`apex/skills/systemd-fleet.md`** (OS-aware: Linux systemd, macOS launchd, not one template for everything).
+
 You do the fun stuff first; automation second. Until then, `./start.sh` still works.
 
 ---
