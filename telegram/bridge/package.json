@@ -1,0 +1,13 @@
+{
+  "name": "opencode-fleet-telegram-bridge",
+  "version": "1.0.0",
+  "description": "Telegram bridge for OpenCode Fleet Lite",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "grammy": "^1.35.0",
+    "dotenv": "^16.4.7"
+  }
+}

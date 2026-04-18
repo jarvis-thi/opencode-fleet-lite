@@ -1,0 +1,8 @@
+{
+  "systemPrompt": "AGENT.md",
+  "provider": {
+    "name": "$OPENCODE_PROVIDER",
+    "model": "$OPENCODE_MODEL"
+  },
+  "mcpServers": {}
+}
