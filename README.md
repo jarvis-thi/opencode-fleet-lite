@@ -55,6 +55,21 @@ You only message **Apex**. Inside the fleet, **any agent can message any agent**
             (tmux injection)
 ```
 
+Same structure in **Mermaid** (renders on GitHub):
+
+```mermaid
+flowchart TB
+  YOU[YOU]
+  YOU -->|tmux attach| APEX["APEX — strategist / lead"]
+  YOU -->|Telegram optional| APEX
+  APEX -->|delegate| FORGE["FORGE — build"]
+  APEX -->|delegate| PRISM["PRISM — research"]
+  APEX -->|spawn| SCOUT["SCOUT / …more"]
+  FORGE <--> PRISM
+  PRISM <--> SCOUT
+  FORGE <--> SCOUT
+```
+
 All comms are **tmux paste-buffer** injection — no extra services, HTTP, or queues.
 
 ---
