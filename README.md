@@ -12,18 +12,34 @@ Built for [OpenCode](https://github.com/sst/opencode). Model choice lives in **y
 
 ## What you get
 
+Three personalities, one mesh: you steer from **Apex**, the rest execute, cross-check, and can **ping each other directly** — delegation is not a one-way hose. Need another specialist? Ask Apex to **spawn** one; it wires the folder, prompt, tmux session, and roster so a new node joins the fleet without you hand-copying templates.
+
 | Agent | Role |
 |-------|------|
-| **Apex** | Strategist and **your only day-to-day interface** — plans work, delegates, can add new agents on demand |
-| **Forge** | Builder — implements and ships |
-| **Prism** | Analyst — research, review, shared notes |
+| **Apex** | **Strategist & your interface** — breaks down work, delegates, tracks outcomes. **You only attach here** (tmux or Telegram). |
+| **Forge** | **Builder** — ships code, scripts, fixes; reports back when something is done or blocked. |
+| **Prism** | **Analyst** — research, review, structured notes; curates shared memory the fleet can read. |
+| **Anyone new** | Ask Apex (e.g. *“add an agent called Scout for security review”*). Apex creates the agent using **`/spawn-agent`** — folders, `AGENT.md`, tmux session, roster updates — you get a new node in the fleet without manual scaffolding. |
 
-Forge and Prism run in their own tmux sessions when Apex brings them up; **you** do not need to attach to them to use the fleet. Optional **Telegram** talks to Apex the same way (messages are delivered into Apex’s session).
+Forge and Prism come up when Apex needs them; you stay in **Apex** unless you *want* to peek at another pane. Optional **Telegram** still lands on Apex first.
+
+**Who talks to whom**
+
+You only message **Apex**. Inside the fleet, **any agent can message any agent** — Forge can ask Prism for a review, Prism can nudge Apex for a decision, and so on. Apex remains your single front door; behind it, the team is a **mesh**, not a strict ladder.
 
 ```
-You  ──►  Apex (lead)  ──►  Forge / Prism / spawned agents
-              ▲
-       optional Telegram
+                         ┌──────────────────┐
+           You (tmux) ──►│      Apex        │◄── optional Telegram
+                         │   (your bridge)  │
+                         └────────┬─────────┘
+                    ┌─────────────┼─────────────┐
+                    │             │             │
+                    ▼             ▼             ▼
+                 ┌──────┐     ┌──────┐     ┌──────────┐
+                 │Forge │◄──►│Prism │◄──►│ Scout / … │  ← spawned on demand
+                 └──┬───┘     └──┬───┘     └────┬─────┘
+                    └───────────┼──────────────┘
+                         any ⟷ any (peer messages)
 ```
 
 ---
