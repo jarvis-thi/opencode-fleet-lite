@@ -30,23 +30,32 @@ Forge and Prism come up when Apex needs them; you stay in **Apex** unless you *w
 You only message **Apex**. Inside the fleet, **any agent can message any agent** — Forge can ask Prism for a review, Prism can nudge Apex for a decision, and so on. Apex remains your single front door; behind it, the team is a **mesh**, not a strict ladder.
 
 ```
-You (tmux)         <————————————————————————————————————————————————————————————————> Apex
-Telegram (optional) <————————————————————————————————————————————————————————————————> Apex
-
-                             ┌──────────────┐
-                             │     Apex     │
-                             │ (fleet lead) │
-                             └──────┬───────┘
-                                    │
-      ┌─────────────────────────────┼─────────────────────────────┐
-      │                             │                             │
-      ▼                             ▼                             ▼
-┌─────────────┐             ┌─────────────┐             ┌─────────────┐
-│    Forge    │◄────────────►│    Prism    │◄────────────►│ Scout / …   │
-└─────────────┘             └─────────────┘             └─────────────┘
-
-          peer mesh — any agent ⟷ any agent (Scout / … spawned on demand)
+                    +-----------+
+                    |    YOU    |
+                    +-----------+
+                     /         \
+          tmux attach    Telegram
+              |          (optional)
+              v              v
+        +===========================+
+        |          APEX             |
+        |    strategist / lead      |
+        |  plans, delegates, spawns |
+        +===========================+
+           /        |         \
+     delegate    delegate    spawn
+         /          |           \
+   +--------+  +--------+  +--------+
+   | FORGE  |  | PRISM  |  | SCOUT  |  ...more
+   | build  |  | research|  | (new)  |
+   +--------+  +--------+  +--------+
+        \          |          /
+         \    direct comms   /
+          +--- any <-> any --+
+            (tmux injection)
 ```
+
+All comms are **tmux paste-buffer** injection — no extra services, HTTP, or queues.
 
 ---
 
