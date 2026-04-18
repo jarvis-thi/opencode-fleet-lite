@@ -7,15 +7,15 @@ Built for [OpenCode](https://github.com/sst/opencode). Works with any LLM.
 ## What you get
 
 ```
-You (Telegram)
-     |
-   APEX ---- strategist, plans and delegates
-   / \
-FORGE  PRISM
-build  research
+You (tmux attach -t apex)  OR  You (Telegram)
+              \                    /
+               +------APEX-------+  strategist
+               /        |        \
+          FORGE       PRISM      [new agents]
+          build       research   spawned on demand
 ```
 
-Three agents in tmux sessions. They talk by injecting messages into each other's terminals. You talk to Apex from Telegram. They remember context across restarts.
+Three agents in tmux sessions. They talk by injecting messages into each other's terminals. You talk to Apex from the terminal (primary) or Telegram (optional). They remember context across restarts. Need more agents? Tell Apex to spawn them.
 
 ## Setup (5 minutes)
 
@@ -23,7 +23,6 @@ Three agents in tmux sessions. They talk by injecting messages into each other's
 
 - OpenCode installed and working (`opencode --version`)
 - tmux installed (`apt install tmux`)
-- Node.js 20+ (for Telegram bridge)
 - An LLM API key
 
 ### 1. Clone and configure
@@ -45,10 +44,7 @@ That's it. Apex starts in a tmux session, then brings up Forge and Prism automat
 
 ### 3. Talk to your fleet
 
-**From Telegram** (if configured):
-Send a message to your bot. Apex receives it, plans, and delegates.
-
-**From terminal:**
+**From terminal** (primary):
 ```bash
 tmux attach -t apex    # Talk to the strategist
 tmux attach -t forge   # Talk to the builder
@@ -56,10 +52,21 @@ tmux attach -t prism   # Talk to the analyst
 # Ctrl+B, D to detach
 ```
 
+**From Telegram** (optional, if configured):
+Send a message to your bot. Apex receives it, plans, and delegates.
+
 **Send a message between agents:**
 ```bash
 ./apex/comms/send.sh forge "Build a hello world API in Python"
 ```
+
+## Spawning new agents
+
+Need a security auditor? Tell Apex:
+
+> "Create a new agent called Scout for security auditing."
+
+Apex creates the folder, writes the personality, starts the tmux session, and updates the fleet roster. Your fleet grows on demand. See `apex/skills/spawn-agent.md` for the full procedure.
 
 ## Folder structure
 
@@ -98,7 +105,7 @@ fleet/
 
 ## How agents communicate
 
-Agents inject messages into each other's tmux sessions:
+Agents inject messages into each other's tmux sessions. ALL agents can talk to ALL other agents directly -- not just through Apex. Direct comms are encouraged when they make sense (e.g. Forge asks Prism for a review without routing through Apex).
 
 ```bash
 # Apex tells Forge to build something
@@ -112,12 +119,19 @@ Forge sees this appear in their terminal, works on it, then replies:
 [Forge to Apex] REPORT | API built at ./api/. 4 endpoints, tests passing. END
 ```
 
-Message types:
+```bash
+# Forge asks Prism directly for a review
+[Forge to Prism] REQUEST | Review ./api/ for security issues. END
+```
+
+Message types (unified across all agents):
 - `REQUEST` -- needs action (always ACK these)
-- `REPORT` -- status update
+- `REPORT` -- status update or findings
 - `ACK` -- acknowledged (never ACK an ACK)
 - `ESCALATE` -- needs the human
 - `INFO` -- informational
+
+Every message ends with `END`.
 
 ## How memory works
 
@@ -133,7 +147,7 @@ Shared knowledge lives in `prism/memory/shared.md` -- all agents can read it.
 
 ## How Telegram works
 
-If you set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env`:
+Telegram is optional. If you set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env`:
 
 1. The bridge receives your message on Telegram
 2. Wraps it in `<telegram>` tags and pastes into Apex's tmux
@@ -141,7 +155,7 @@ If you set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env`:
 4. Apex replies using the `telegram_reply` MCP tool
 5. You see the response on your phone
 
-Only your chat ID can talk to the bot. Secure by default.
+Only your chat ID can talk to the bot. Secure by default. Node.js 20+ is required only if using the Telegram bridge.
 
 ## Customization
 
@@ -149,7 +163,9 @@ Only your chat ID can talk to the bot. Secure by default.
 
 **Change models:** Uses whatever model you have configured in OpenCode. No separate config needed.
 
-**Add a 4th agent:** Copy any agent folder, edit AGENT.md, add to the roster in each agent's comms config.
+**Add a new agent:** Tell Apex to spawn one using `/spawn-agent`. It handles folder creation, personality, tmux session, and roster updates automatically. No manual copying needed.
+
+**Manual agent creation:** If you prefer, copy any agent folder, edit AGENT.md, add to the roster in each agent's `comms/roster.sh`.
 
 ## License
 
