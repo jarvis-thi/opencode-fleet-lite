@@ -246,17 +246,22 @@ That is the whole transport story — **KISS**, inspectable, grep-friendly.
 
 ---
 
-## Example agents: personalities, skills, and the “fleet army” pattern
+## Agent personas & the “fleet army” pattern
 
-This repo is a **template for building many agents** that cooperate. You do **not** need a bespoke platform — only **OpenCode**, **tmux**, and markdown. Here is how each example agent is put together, so you can clone the idea for your own “army.”
+This repo is a **template for building many agents** that cooperate. You do **not** need a bespoke platform — only **OpenCode**, **tmux**, and markdown. Each shipped agent below is **only** persona markdown + skills + tmux — the “army” scales by copying folders and rosters.
 
-### How it works (three layers)
+### How personas and skills stack
 
-1. **`AGENT.md`** — **Identity** (who they are), **voice** (how they sound), **roster** (who they can ping), **protocol** (message types), **memory rules**, **principles**. This is the *persona contract* the model reads every session.
-2. **`skills/*.md`** — Small playbooks referenced by convention (`/spawn-agent` → read `spawn-agent.md`). Keeps `AGENT.md` lean; procedures live in focused files you can iterate without rewriting the whole prompt.
-3. **Your LLM / OpenCode config** — Model choice, temperature, and tool permissions sit **outside** this repo; we do not hardcode them here.
+| Layer | File | What it does |
+|-------|------|----------------|
+| **`opencode.json`** | Per agent | Sets `systemPrompt` → `AGENT.md`; optional MCP (e.g. Telegram on Apex only). |
+| **`AGENT.md`** | Per agent | Identity, voice, **do/don’t**, roster, comms protocol, memory contract — the **persona** the model loads every session. Keep it tight. |
+| **`skills/*.md`** | Per agent | Playbooks: slash-style habits (`/delegate`, `/review`, …), checklists, recovery steps. Iterate here without rewriting the whole prompt. |
+| **OpenCode / LLM config** | Outside repo | Model, temperature, tools — not pinned in this tree. |
 
-Adding a new specialist: **`/spawn-agent`** (Apex) or copy an existing agent tree, rewrite **Identity + skills**, update **all `comms/roster.sh`** files, add the name to **`apex/comms/roster.sh`** so **`ensure-fleet-up.sh`** starts them.
+Adding a specialist: **`/spawn-agent`** (Apex) or copy an existing agent tree, rewrite **Identity + skills**, update **every** `comms/roster.sh`, and add the peer to **`apex/comms/roster.sh`** so **`ensure-fleet-up.sh`** starts them. Optional: **`/delegate mnemosyne`** to stub `fleet-wiki/projects/<slug>/` (see [Memory (experimental): Mnemosyne](#memory-experimental-mnemosyne)).
+
+*See also [Customization — talk to Apex](#customization--talk-to-apex) for `/tune-fleet` and fleet-wide retunes.*
 
 ---
 
@@ -267,9 +272,9 @@ Adding a new specialist: **`/spawn-agent`** (Apex) or copy an existing agent tre
 | **Role** | Sole routine interface for the user (tmux + optional Telegram). Decomposes work, delegates, spawns agents, **never writes application code**. |
 | **Voice** | Calm, methodical, plain-spoken — no filler. |
 | **Differentiator** | **Fleet liveness:** runs `scripts/ensure-fleet-up.sh` **every user message** so peers exist before comms; **recovery** skills when tmux breaks. |
-| **Skills** | `spawn-agent`, `delegate`, `tune-fleet`, `recover-fleet`, `wiki-memory`, `fleet-comms`, `fleet-status` — ops + coordination heavy. |
+| **Skills** | Under `apex/skills/`: `spawn-agent`, `delegate`, `tune-fleet`, `recover-fleet`, `wiki-memory`, `fleet-comms`, `fleet-status` — ops-heavy. |
 
-Apex is the **officer**; others are **specialists**.
+Apex is the **officer**; others are **specialists**. **Do/don’t** is written in `apex/AGENT.md` so the model does not improvise fleet ops.
 
 ---
 
@@ -280,7 +285,7 @@ Apex is the **officer**; others are **specialists**.
 | **Role** | Ships code and fixes; short **REPORT**s back when done or blocked. |
 | **Voice** | Terse, action-first — “doing X, result Y.” |
 | **Differentiator** | Explicit boundary: **does not** run fleet ops or wiki; may **REQUEST** Prism or Mnemosyne for context. |
-| **Skills** | `fleet-comms`, `report` — minimal; most effort is in the work product. |
+| **Skills** | `forge/skills/fleet-comms`, `forge/skills/report` — minimal; most effort is in the work product. |
 
 ---
 
@@ -291,7 +296,7 @@ Apex is the **officer**; others are **specialists**.
 | **Role** | Research, code review, structured findings; owns **`prism/memory/shared.md`** (fast, broadcast-friendly notices). |
 | **Voice** | Evidence-led, headings and bullets; severity labels on reviews. |
 | **Differentiator** | **Shared vs wiki:** Prism drops **session-fast** knowledge; **Mnemosyne** owns **linked, long-lived** narrative in `mnemosyne/memory/fleet-wiki/`. |
-| **Skills** | `fleet-comms`, `review` — depth where Forge is breadth. |
+| **Skills** | `prism/skills/fleet-comms`, `prism/skills/review` — depth where Forge is breadth. |
 
 ---
 
@@ -302,7 +307,13 @@ Apex is the **officer**; others are **specialists**.
 | **Role** | Librarian: **Obsidian-style** vault under `memory/fleet-wiki/`, per-project stubs, MOC — answers **REQUEST**s to ingest or summarise. |
 | **Voice** | Neutral, archival, wikilink-friendly. |
 | **Differentiator** | Does **not** replace `shared.md`; **graduates** durable truth from chaos. |
-| **Skills** | `fleet-wiki`, `respond-to-memory-requests`. |
+| **Skills** | `mnemosyne/skills/fleet-wiki`, `mnemosyne/skills/respond-to-memory-requests`. |
+
+---
+
+### Example spawn: **Scout** (security) — not shipped in this repo
+
+If you **`/spawn-agent scout "…"`**, Apex creates `scout/` mirroring Forge/Prism: **`scout/AGENT.md`** defines the auditor voice, **`scout/skills/threat-review.md`** (you add) holds the checklist, **`scout/comms/roster.sh`** lists peers. Same **tmux + `send.sh`** mesh — only **persona + skills** change. Use this pattern for DBAs, release captains, or any parallel specialist.
 
 ---
 

@@ -32,4 +32,5 @@ Perform a structured code review.
    Overall assessment and recommendation.
    ```
 4. Send summary to Apex via `comms/send.sh apex "REVIEW | <summary>"`.
-5. If findings affect shared knowledge, update `memory/shared.md`.
+5. If findings should be visible **this week** to everyone, update `memory/shared.md` briefly.
+6. If findings are **durable** (ADRs, cross-session narrative), **REQUEST** Mnemosyne to fold them into `../mnemosyne/memory/fleet-wiki/` — do not duplicate large write-ups in both places.

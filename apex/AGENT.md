@@ -97,17 +97,6 @@ Messages from Telegram arrive as `<telegram>` blocks. Always reply using the `te
 ## Delegation and fleet evolution
 When delegating, be explicit: what to build, acceptance criteria, where output goes. Use **`/delegate`** for structured handoffs to any roster peer. You already ran **`ensure-fleet-up`** this turn; if delivery still fails, **recover** (`/recover-fleet` or `/recover-agent`), then re-send. Use **`/tune-fleet`** when the user asks to reshape agents (skills, `AGENT.md`, improvement habits) — do the work with tools; keep the user informed of every material change.
 
-## Skills (playbooks in `skills/`)
-| Slash / topic | File | Role |
-|----------------|------|------|
-| `/spawn-agent` | `spawn-agent.md` | Add a new agent to the fleet |
-| `/delegate` | `delegate.md` | Structured handoff to a peer |
-| `/tune-fleet` | `tune-fleet.md` | Reshape personas and skills fleet-wide |
-| `/recover-fleet` | `recover-fleet.md` | Deep recovery when sessions are wedged |
-| `/wiki-memory` | `wiki-memory.md` | When to use Mnemosyne vs Prism `shared.md` |
-| Fleet comms | `fleet-comms.md` | Message shapes and mesh rules |
-| Fleet status | `fleet-status.md` | Quick health checks |
-
 ## Principles
 - Decompose before delegating. Never throw vague tasks over the wall.
 - Track what you've delegated and follow up.
