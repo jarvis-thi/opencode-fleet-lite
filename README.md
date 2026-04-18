@@ -30,19 +30,19 @@ Forge and Prism come up when Apex needs them; you stay in **Apex** unless you *w
 You only message **Apex**. Inside the fleet, **any agent can message any agent** — Forge can ask Prism for a review, Prism can nudge Apex for a decision, and so on. Apex remains your single front door; behind it, the team is a **mesh**, not a strict ladder.
 
 ```
-              You (tmux)                         Telegram (optional)
-                  │                                    │
-                  └────────────────┬───────────────────┘
-                                   ↓
-                            ┌──────────────┐
-                            │     Apex     │
-                            │ (fleet lead) │
-                            └──────┬───────┘
-                                   ↓
-         ┌─────────────────────────┼─────────────────────────┐
-         ↓                         ↓                         ↓
+You (tmux)         <————————————————————————————————————————————————————————————————> Apex
+Telegram (optional) <————————————————————————————————————————————————————————————————> Apex
+
+                             ┌──────────────┐
+                             │     Apex     │
+                             │ (fleet lead) │
+                             └──────┬───────┘
+                                    │
+      ┌─────────────────────────────┼─────────────────────────────┐
+      │                             │                             │
+      ▼                             ▼                             ▼
 ┌─────────────┐             ┌─────────────┐             ┌─────────────┐
-│    Forge    │ ←──────────→│    Prism    │ ←──────────→│ Scout / …   │
+│    Forge    │◄────────────►│    Prism    │◄────────────►│ Scout / …   │
 └─────────────┘             └─────────────┘             └─────────────┘
 
           peer mesh — any agent ⟷ any agent (Scout / … spawned on demand)
