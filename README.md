@@ -246,6 +246,77 @@ That is the whole transport story — **KISS**, inspectable, grep-friendly.
 
 ---
 
+## Example agents: personalities, skills, and the “fleet army” pattern
+
+This repo is a **template for building many agents** that cooperate. You do **not** need a bespoke platform — only **OpenCode**, **tmux**, and markdown. Here is how each example agent is put together, so you can clone the idea for your own “army.”
+
+### How it works (three layers)
+
+1. **`AGENT.md`** — **Identity** (who they are), **voice** (how they sound), **roster** (who they can ping), **protocol** (message types), **memory rules**, **principles**. This is the *persona contract* the model reads every session.
+2. **`skills/*.md`** — Small playbooks referenced by convention (`/spawn-agent` → read `spawn-agent.md`). Keeps `AGENT.md` lean; procedures live in focused files you can iterate without rewriting the whole prompt.
+3. **Your LLM / OpenCode config** — Model choice, temperature, and tool permissions sit **outside** this repo; we do not hardcode them here.
+
+Adding a new specialist: **`/spawn-agent`** (Apex) or copy an existing agent tree, rewrite **Identity + skills**, update **all `comms/roster.sh`** files, add the name to **`apex/comms/roster.sh`** so **`ensure-fleet-up.sh`** starts them.
+
+---
+
+### Apex — strategist & human interface
+
+| Aspect | What we did |
+|--------|-------------|
+| **Role** | Sole routine interface for the user (tmux + optional Telegram). Decomposes work, delegates, spawns agents, **never writes application code**. |
+| **Voice** | Calm, methodical, plain-spoken — no filler. |
+| **Differentiator** | **Fleet liveness:** runs `scripts/ensure-fleet-up.sh` **every user message** so peers exist before comms; **recovery** skills when tmux breaks. |
+| **Skills** | `spawn-agent`, `delegate`, `tune-fleet`, `recover-fleet`, `wiki-memory`, `fleet-comms`, `fleet-status` — ops + coordination heavy. |
+
+Apex is the **officer**; others are **specialists**.
+
+---
+
+### Forge — builder
+
+| Aspect | What we did |
+|--------|-------------|
+| **Role** | Ships code and fixes; short **REPORT**s back when done or blocked. |
+| **Voice** | Terse, action-first — “doing X, result Y.” |
+| **Differentiator** | Explicit boundary: **does not** run fleet ops or wiki; may **REQUEST** Prism or Mnemosyne for context. |
+| **Skills** | `fleet-comms`, `report` — minimal; most effort is in the work product. |
+
+---
+
+### Prism — analyst
+
+| Aspect | What we did |
+|--------|-------------|
+| **Role** | Research, code review, structured findings; owns **`prism/memory/shared.md`** (fast, broadcast-friendly notices). |
+| **Voice** | Evidence-led, headings and bullets; severity labels on reviews. |
+| **Differentiator** | **Shared vs wiki:** Prism drops **session-fast** knowledge; **Mnemosyne** owns **linked, long-lived** narrative in `mnemosyne/memory/fleet-wiki/`. |
+| **Skills** | `fleet-comms`, `review` — depth where Forge is breadth. |
+
+---
+
+### Mnemosyne — wiki & project memory (experiment)
+
+| Aspect | What we did |
+|--------|-------------|
+| **Role** | Librarian: **Obsidian-style** vault under `memory/fleet-wiki/`, per-project stubs, MOC — answers **REQUEST**s to ingest or summarise. |
+| **Voice** | Neutral, archival, wikilink-friendly. |
+| **Differentiator** | Does **not** replace `shared.md`; **graduates** durable truth from chaos. |
+| **Skills** | `fleet-wiki`, `respond-to-memory-requests`. |
+
+---
+
+### Building your own army
+
+- **Start from one `AGENT.md`** — lock identity in three sentences, then add **only** the protocol you need.
+- **Add skills as you repeat yourself** — the second time you type the same procedure, move it to `skills/<name>.md` and reference it from `AGENT.md`.
+- **Keep rosters symmetric** — every agent’s `comms/roster.sh` should list peers they may message; Apex’s roster drives **auto-start**.
+- **Mesh, not hierarchy** — any agent can ping any agent; Apex stays the **human** front door.
+
+That is the **fleet army pattern**: cheap to fork, easy to read, no magic runtime beyond tmux paste and discipline in markdown.
+
+---
+
 ## License
 
 MIT
