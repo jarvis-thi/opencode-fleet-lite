@@ -10,7 +10,7 @@ You need [OpenCode](https://github.com/sst/opencode) and **tmux**. Models live i
 
 ---
 
-## The crew (in plain English)
+## The crew (in this random example)
 
 | Who | Job |
 |-----|-----|
@@ -50,7 +50,7 @@ Check what’s alive: `./status.sh`. Wind down: `./stop.sh`.
 
 If Apex goes quiet, it’s probably thinking or waiting on Forge/Prism. A gentle “status?” is fair game.
 
-Optional **Telegram**: put your bot token and chat id in `.env`, `npm install` inside `telegram/bridge`, run `./start.sh` again. Same Apex — phone instead of tmux.
+Want **Telegram** instead of (or as well as) tmux? Setup and commands are at the bottom.
 
 ---
 
@@ -73,6 +73,35 @@ Each agent has `AGENT.md`, `memory/`, and `skills/` — that’s how personaliti
 ## Vikki (wiki memory) — optional
 
 Want durable linked notes instead of only Prism’s quick board? Read **`vikki/SETUP.md`**. Apex can enable her by updating rosters — you don’t have to hand-merge five files unless you enjoy that.
+
+---
+
+## Telegram — setup and run
+
+1. **Create a bot** in Telegram: talk to **@BotFather**, `/newbot`, copy the **bot token**.
+
+2. **Get your chat id** (the account allowed to talk to the bot). Easiest: message **@userinfobot** (or similar) and copy the **numeric id** — that goes in `TELEGRAM_CHAT_ID`.
+
+3. **Put secrets in `.env`** at the fleet repo root (same folder as `start.sh`). If you don’t have `.env` yet, `./start.sh` creates it from `.env.example` — then edit:
+
+   ```
+   TELEGRAM_BOT_TOKEN=123456:ABC...your_token_here
+   TELEGRAM_CHAT_ID=123456789
+   ```
+
+4. **Install bridge deps once:**
+
+   ```bash
+   cd telegram/bridge && npm install && cd ../..
+   ```
+
+5. **Start (or restart) everything** — this launches Apex and, if `TELEGRAM_BOT_TOKEN` is set, the **fleet-telegram** tmux session:
+
+   ```bash
+   ./start.sh
+   ```
+
+Messages go to **Apex** the same as in tmux; you can chat from your phone without attaching. To see whether the bridge is up: `./status.sh` (look for `fleet-telegram`) or `tmux ls`.
 
 ---
 
