@@ -198,7 +198,7 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 
 ## How fleet comms work
 
-**Idea:** each agent runs **OpenCode inside its own tmux session** (`apex`, `forge`, `prism`, or whatever you spawned). To contact another agent, the sender runs **`comms/send.sh`** from its tree — the script resolves the target session, formats a line, and **injects it with tmux** (buffer + paste into the peer’s pane). The peer sees new text appear as if it arrived on the wire; no broker, no extra port — **the terminal is the inbox.**
+**Idea:** each agent runs **OpenCode inside its own tmux session** (`apex`, `forge`, `prism`, or whatever you spawned). To contact another agent, the sender runs **`comms/send.sh`** from its tree — the script resolves the target session, formats a line, and **injects it with tmux** (buffer + paste into the peer’s pane + Enter). The peer sees new text appear as if it arrived on the wire; no broker, no extra port — **the terminal is the inbox.**
 
 **Message shape** (same vocabulary for every agent):
 
