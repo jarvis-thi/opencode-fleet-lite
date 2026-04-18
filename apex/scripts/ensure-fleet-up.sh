@@ -1,22 +1,18 @@
 #!/usr/bin/env bash
 # Ensure every agent in apex/comms/roster.sh has a live tmux session.
-# Run from anywhere:  bash apex/scripts/ensure-fleet-up.sh
-# Or from apex/:       bash scripts/ensure-fleet-up.sh
-# Built-ins forge|prism use: opencode --agent <name>. All other roster names: opencode (spawn-agent contract).
-# Extend the case if a new built-in needs a different invocation.
+# Bash 3.2 compatible.
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APEX_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 FLEET_DIR="$(cd "$APEX_DIR/.." && pwd)"
 
-# shellcheck disable=SC1091
 source "$APEX_DIR/comms/roster.sh"
 
 started=()
 attempted=0
-for name in "${!ROSTER[@]}"; do
-  sess="${ROSTER[$name]}"
+for name in $(roster_all); do
+  sess="$(roster_session "$name")"
   if tmux has-session -t "$sess" 2>/dev/null; then
     continue
   fi

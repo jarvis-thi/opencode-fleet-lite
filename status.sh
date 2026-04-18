@@ -2,7 +2,6 @@
 set -euo pipefail
 
 FLEET_DIR="$(cd "$(dirname "$0")" && pwd)"
-# shellcheck disable=SC1091
 source "$FLEET_DIR/apex/comms/roster.sh"
 
 echo "=== OpenCode Fleet Lite Status ==="
@@ -17,8 +16,8 @@ else
 fi
 printf "  %-20s %s\n" "apex" "$apex_st"
 
-for name in $(printf '%s\n' "${!ROSTER[@]}" | sort); do
-  sess="${ROSTER[$name]}"
+for name in $(roster_all); do
+  sess="$(roster_session "$name")"
   if tmux has-session -t "$sess" 2>/dev/null; then
     st="UP"
   else

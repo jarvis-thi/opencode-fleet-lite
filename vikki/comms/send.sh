@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Vikki -> Agent message sender
-# Usage: ./send.sh <agent> "message"
-# Injection: temp file + tmux load-buffer / paste-buffer (portable; avoids set-buffer -t quirks).
+# Usage: bash comms/send.sh <agent> "message"
+# Bash 3.2 compatible.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -11,9 +11,9 @@ SENDER="Vikki"
 TARGET="$1"
 MESSAGE="$2"
 
-SESSION="${ROSTER[$TARGET]:-}"
+SESSION="$(roster_session "$TARGET")"
 if [ -z "$SESSION" ]; then
-  echo "Error: Unknown agent '$TARGET'. Known agents: ${!ROSTER[*]}"
+  echo "Error: Unknown agent '$TARGET'. Known agents: $(roster_all)"
   exit 1
 fi
 
@@ -22,7 +22,8 @@ if ! tmux has-session -t "$SESSION" 2>/dev/null; then
   exit 1
 fi
 
-FORMATTED="[$SENDER to ${TARGET^}] $MESSAGE"
+TITLED="$(echo "${TARGET:0:1}" | tr '[:lower:]' '[:upper:]')${TARGET:1}"
+FORMATTED="[$SENDER to $TITLED] $MESSAGE"
 TMP=$(mktemp)
 BUF="fleet-comms-${RANDOM}${RANDOM}"
 printf '%s' "$FORMATTED" > "$TMP"

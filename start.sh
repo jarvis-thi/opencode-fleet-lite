@@ -42,23 +42,50 @@ if ! command -v opencode >/dev/null 2>&1; then
   exit 1
 fi
 
-# Start Apex
-if tmux has-session -t apex 2>/dev/null; then
-  echo "[apex] Already running -- skipping"
-else
-  echo "[apex] Starting Apex agent..."
-  tmux new-session -d -s apex -c "$FLEET_DIR/apex" "opencode"
-  echo "[apex] Waiting for boot..."
-  sleep 3
-  if ! tmux has-session -t apex 2>/dev/null; then
-    echo "[error] Apex tmux session did not stay up." >&2
-    echo "        Usually: opencode crashed or exited immediately (missing auth, bad config)." >&2
-    echo "        Try by hand:  cd \"$FLEET_DIR/apex\" && opencode" >&2
-    exit 1
+start_agent() {
+  local name="$1"
+  local sess="$2"
+  local dir="$FLEET_DIR/$name"
+  local cmd="$3"
+
+  if [[ ! -d "$dir" ]]; then
+    echo "[$name] SKIP — missing directory $dir"
+    return
   fi
-  tmux send-keys -t apex Enter
-  echo "[apex] Started"
-fi
+
+  if tmux has-session -t "$sess" 2>/dev/null; then
+    echo "[$name] Already running -- skipping"
+    return
+  fi
+
+  echo "[$name] Starting..."
+  tmux new-session -d -s "$sess" -c "$dir" "$cmd"
+  echo "[$name] Waiting for boot..."
+  sleep 3
+  if ! tmux has-session -t "$sess" 2>/dev/null; then
+    echo "[error] $name tmux session did not stay up." >&2
+    echo "        Usually: opencode crashed or exited immediately (missing auth, bad config)." >&2
+    echo "        Try by hand:  cd \"$dir\" && $cmd" >&2
+    return 1
+  fi
+  tmux send-keys -t "$sess" Enter
+  echo "[$name] Started"
+}
+
+# Source roster (bash 3.2 compatible)
+source "$FLEET_DIR/apex/comms/roster.sh"
+
+# Start Apex first (exit if it can't come up — it's the user's interface)
+start_agent apex apex "opencode" || exit 1
+
+# Start all roster agents
+for name in $(roster_all); do
+  sess="$(roster_session "$name")"
+  case "$name" in
+    forge|prism) start_agent "$name" "$sess" "opencode --agent $name" || true ;;
+    *)           start_agent "$name" "$sess" "opencode" || true ;;
+  esac
+done
 
 # Start Telegram bridge (optional)
 if [[ -n "${TELEGRAM_BOT_TOKEN:-}" ]]; then
@@ -76,10 +103,11 @@ fi
 echo ""
 echo "=== Fleet Started ==="
 echo ""
-echo "  Talk to the fleet (tmux):  tmux attach -t apex   # Apex is the lead — your interface"
-echo "  Other agents:            Apex runs scripts/ensure-fleet-up.sh every user turn (forge, prism, optional peers in roster)"
+echo "  Talk to the fleet:  tmux attach -t apex"
+echo "  Sessions:"
+tmux list-sessions -F '    #{session_name}' 2>/dev/null || true
 if [[ -n "${TELEGRAM_BOT_TOKEN:-}" ]]; then
-  echo "  Telegram:                messages go to Apex (bridge session: fleet-telegram)"
+  echo "  Telegram: messages go to Apex (bridge session: fleet-telegram)"
 fi
 echo ""
 echo "  Stop:     ./stop.sh"

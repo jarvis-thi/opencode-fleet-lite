@@ -3,3 +3,4 @@ node_modules/
 *.log
 */memory/bootstrap.md
 .opencode/
+.DS_Store

@@ -2,37 +2,64 @@
 
 How to communicate with other agents in the fleet.
 
+## CRITICAL — Response Reflex Rule
+
+**When you receive a `[X to You]` formatted message in your terminal, your ONLY valid response is:**
+
+```bash
+bash comms/send.sh <sender> "<TYPE> | <your response> END"
+```
+
+**NEVER type a reply directly in your own terminal.** Fleet messages come from other agents — they cannot read your terminal output. The only way they see your response is if you inject it into their tmux session via `comms/send.sh`.
+
+If you type a reply without running `comms/send.sh`, the sender will never see it. This is the single most important rule of fleet communication.
+
 ## How it works
 
-You share a server with other agents. Each agent runs in its own tmux session. You talk to them by injecting messages into their terminal using `comms/send.sh`.
+You share a server with other agents. Each agent runs in its own tmux session. You talk to them by injecting messages into their terminal using `bash comms/send.sh`.
 
-When you send a message, it appears in the other agent's terminal as if someone typed it. They read it, process it, and reply the same way back to you.
+When you send a message, it appears in the other agent's terminal as if someone typed it. They read it, process it, and **must** reply the same way back to you via their own `comms/send.sh`.
 
 ## Sending a message
 
 ```bash
-./comms/send.sh <agent> "<message>"
+bash comms/send.sh <agent> "<TYPE> | <message body> END"
 ```
 
 Examples:
 ```bash
-./comms/send.sh apex "API build complete. 4 endpoints, tests passing."
-./comms/send.sh prism "Can you review the auth middleware at ../project/src/auth.ts?"
-./comms/send.sh apex "Blocked on database creds. Need the connection string."
+bash comms/send.sh apex "REPORT | API build complete. 4 endpoints, tests passing. END"
+bash comms/send.sh prism "REQUEST | Can you review the auth middleware at ../project/src/auth.ts? END"
+bash comms/send.sh apex "ESCALATE | Blocked on database creds. Need the connection string. END"
 ```
+
+## Receiving a message
+
+When a message appears in your terminal like:
+```
+[Apex to Forge] REQUEST | Implement user auth END
+```
+
+You MUST respond ONLY by running:
+```bash
+bash comms/send.sh apex "ACK | On it. END"
+```
+
+Then do the work, then report back:
+```bash
+bash comms/send.sh apex "REPORT | Auth implemented at src/auth.ts. Tests passing. END"
+```
+
+**Do NOT just type your response in the terminal. The sender will not see it.**
 
 ## Message format
 
-Always follow this structure:
+All messages follow this structure:
 ```
-[Forge to Apex] REPORT | API build complete.
-4 endpoints implemented: GET/POST/PUT/DELETE /users
-Tests: 12/12 passing
-Output at ../project/api/
-END
+[<Sender> to <Receiver>] <TYPE> | <message body> END
 ```
 
-The prefix `[Forge to Apex]` is added automatically by send.sh. You write the TYPE, body, and END.
+The prefix `[<Sender> to <Receiver>]` is added automatically by send.sh. You write the TYPE, body, and END.
 
 ## Message types
 
@@ -46,11 +73,12 @@ The prefix `[Forge to Apex]` is added automatically by send.sh. You write the TY
 
 ## Rules
 
-- Always ACK a REQUEST (even a short "On it.")
-- Never ACK an ACK (prevents infinite loops)
-- End every message with `END` on its own line
-- Report completion immediately -- never go silent after finishing
-- When you receive a message from another agent, it will appear in your terminal as `[Sender to You] TYPE | message END`
+1. **ALWAYS use `bash comms/send.sh` to reply. Never type a reply directly.**
+2. Always ACK a REQUEST (even a short "On it.")
+3. Never ACK an ACK (prevents infinite loops)
+4. End every message with `END`
+5. Report completion immediately — never go silent after finishing
+6. When you receive a message from another agent, it will appear in your terminal as `[Sender to You] TYPE | message END`
 
 ## Checking who's online
 
@@ -70,12 +98,10 @@ tmux capture-pane -t prism -p | tail -20
 
 Any agent in the fleet. Check `comms/roster.sh` for the current list.
 
-Currently: Apex (strategist), Prism (analyst). More may be added at runtime by Apex.
-
 ## When to talk directly vs through Apex
 
 - Need a code review? Message Prism directly.
 - Need context or research? Message Prism directly.
-- Reporting task completion? Message Apex (he tracks tasks).
-- Blocked and need help? Message Apex (he can re-scope or escalate).
+- Reporting task completion? Message Apex (tracks tasks).
+- Blocked and need help? Message Apex (can re-scope or escalate).
 - General question for anyone? Message whoever is most relevant.

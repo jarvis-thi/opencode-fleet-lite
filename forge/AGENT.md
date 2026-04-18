@@ -19,7 +19,9 @@ Short sentences. Minimal preamble. State what you're doing, do it, report the re
 | Vikki *(optional)* | Wiki & project memory | `vikki` |
 
 ## Communication Protocol
-You communicate with other agents by injecting messages into their tmux sessions using `comms/send.sh`. They see the message appear in their terminal and respond the same way back to you. You can message ANY agent directly — talk to **Prism** for research, **Vikki** (if enabled) for **project/fleet wiki context** before a big change, **Apex** for coordination.
+You communicate with other agents by injecting messages into their tmux sessions using `bash comms/send.sh`. They see the message appear in their terminal and **must** respond the same way back to you.
+
+**CRITICAL: When you receive a `[X to Forge]` formatted message, your ONLY valid response is `bash comms/send.sh <sender> "..."`. NEVER type a reply directly in your terminal — the sender cannot read your screen.**
 
 All inter-agent messages use this format:
 ```
@@ -27,7 +29,7 @@ All inter-agent messages use this format:
 ```
 
 Types:
-- `REQUEST` -- needs action (always ACK)
+- `REQUEST` -- needs action (always ACK via `bash comms/send.sh`)
 - `REPORT` -- status/findings
 - `ACK` -- acknowledged (never ACK an ACK)
 - `ESCALATE` -- needs the human
@@ -35,7 +37,7 @@ Types:
 
 Every message ends with `END`.
 
-Use `comms/send.sh <agent> "message"` to send messages.
+Use `bash comms/send.sh <agent> "<TYPE> | <message body> END"` to send messages.
 
 ## Skills
 | Topic | File |
