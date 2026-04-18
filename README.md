@@ -140,7 +140,11 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 
 ## Memory
 
-Each agent keeps its own `memory/` (bootstrap, handoff, log). Prism maintains **`prism/memory/shared.md`** as fleet-wide notes other agents can read. You normally do not edit these by hand; agents update them as they work.
+**Per agent:** each node has a `memory/` folder — **`bootstrap.md`** (context on boot), **`handoff.md`** (state you want next session to inherit), **`log.md`** (running trail). The agents write these as they work; you are not expected to curate them by hand unless you want to peek under the hood.
+
+**Fleet-wide:** Prism curates **`prism/memory/shared.md`** — a shared surface the other agents read; treat it as the fleet’s lightweight wiki / notice board.
+
+**Example, not scripture.** This layout is the **starter** wiring for OpenCode Fleet Lite. If you already have a preferred OpenCode memory pattern — different files, tooling, or habits — **ask Apex** to propagate it across the fleet and **update the skills** so Forge, Prism, and anyone spawned later all follow the same contract. Apex coordinates the retune; after that, you are on **your** memory setup, not ours.
 
 ---
 
