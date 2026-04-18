@@ -9,7 +9,7 @@ Check the status of all fleet agents.
 
 ## Behaviour
 1. Run `tmux list-sessions` to check which agent sessions are alive.
-2. For each agent in the roster (forge, prism):
+2. For each agent in **`comms/roster.sh`** (forge, prism, mnemosyne, …):
    - Report whether the tmux session exists.
    - If it exists, capture the last few lines with `tmux capture-pane -t <session> -p | tail -5`.
 3. Summarise fleet health: which agents are up, which are down.

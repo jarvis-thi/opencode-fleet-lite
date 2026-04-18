@@ -58,7 +58,7 @@ echo ""
 echo "=== Fleet Started ==="
 echo ""
 echo "  Talk to the fleet (tmux):  tmux attach -t apex   # Apex is the lead — your interface"
-echo "  Other agents:            Apex runs scripts/ensure-fleet-up.sh every user turn (roster-driven)"
+echo "  Other agents:            Apex runs scripts/ensure-fleet-up.sh every user turn (forge, prism, mnemosyne, …)"
 if [[ -n "${TELEGRAM_BOT_TOKEN:-}" ]]; then
   echo "  Telegram:                messages go to Apex (bridge session: fleet-telegram)"
 fi

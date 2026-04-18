@@ -5,4 +5,5 @@
 declare -A ROSTER=(
   [forge]="forge"
   [prism]="prism"
+  [mnemosyne]="mnemosyne"
 )

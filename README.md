@@ -1,6 +1,6 @@
 # opencode-fleet-lite
 
-A small **example** drop-in fleet of three **OpenCode** agents that work together on your machine. Configure once, run `./start.sh`, then talk to the fleet in **one** place: **`tmux attach -t apex`**, or **Telegram** if you enable the optional bridge. **Apex** is the lead — Forge, Prism, and any agents you add later coordinate through that node so the fleet can ship work as a team.
+A small **example** drop-in fleet of **OpenCode** agents that work together on your machine (core trio **+** an optional **Mnemosyne** wiki-memory experiment). Configure once, run `./start.sh`, then talk to the fleet in **one** place: **`tmux attach -t apex`**, or **Telegram** if you enable the optional bridge. **Apex** is the lead — Forge, Prism, and any agents you add later coordinate through that node so the fleet can ship work as a team.
 
 **KISS — Keep It Simple, Stupid:** coordination is intentionally boring on purpose. Each agent is a **tmux** session; agents reach each other by **paste-buffer injection** — plain text dropped into the peer’s terminal — not a bespoke message bus, not another service to babysit. **That is why this stack is tmux-first:** fewer moving parts, easier to read, trivial to debug in a scrollback.
 
@@ -14,16 +14,17 @@ Built for [OpenCode](https://github.com/sst/opencode). Model choice lives in **y
 
 ## What you get
 
-Three personalities, one mesh: you steer from **Apex**, the rest execute, cross-check, and can **ping each other directly** — delegation is not a one-way hose. Need another specialist? Ask Apex to **spawn** one; it wires the folder, prompt, tmux session, and roster so a new node joins the fleet without you hand-copying templates.
+Four core roles (plus spawns), one mesh: you steer from **Apex**, the rest execute, cross-check, and can **ping each other directly** — delegation is not a one-way hose. Need another specialist? Ask Apex to **spawn** one; it wires the folder, prompt, tmux session, and roster so a new node joins the fleet without you hand-copying templates.
 
 | Agent | Role |
 |-------|------|
 | **Apex** | **Strategist & your interface** — breaks down work, delegates, tracks outcomes. **You only attach here** (tmux or Telegram). |
 | **Forge** | **Builder** — ships code, scripts, fixes; reports back when something is done or blocked. |
-| **Prism** | **Analyst** — research, review, structured notes; curates shared memory the fleet can read. |
+| **Prism** | **Analyst** — research, review, structured notes; curates `prism/memory/shared.md` the fleet can read. |
+| **Mnemosyne** | **Wiki & project memory** (optional experiment) — Obsidian-style **`mnemosyne/memory/fleet-wiki/`** (`00-MOC-Fleet.md`, `fleet/`, `projects/<slug>/`); complements Prism’s shared file, does not replace it. |
 | **Anyone new** | Ask Apex (e.g. *“add an agent called Scout for security review”*). Apex creates the agent using **`/spawn-agent`** — folders, `AGENT.md`, tmux session, roster updates — you get a new node in the fleet without manual scaffolding. |
 
-Forge and Prism come up when Apex needs them; you stay in **Apex** unless you *want* to peek at another pane. Optional **Telegram** still lands on Apex first.
+Forge, Prism, and Mnemosyne come up when Apex runs the roster sweep (`ensure-fleet-up.sh`); you stay in **Apex** unless you *want* to peek at another pane. Optional **Telegram** still lands on Apex first.
 
 **Who talks to whom**
 
@@ -46,8 +47,8 @@ You only message **Apex**. Inside the fleet, **any agent can message any agent**
           delegate     delegate     spawn       
               /          |            \         
         +----------+  +----------+  +----------+
-        |  FORGE   |  |  PRISM   |  |  SCOUT   |
-        |  build   |  | research |  |  (new)   |
+        |  FORGE   |  |  PRISM   |  | MNEMOSYNE|
+        |  build   |  | research |  | wiki/mem |
         +----------+  +----------+  +----------+
              \            |            /        
               \     direct comms      /         
@@ -64,13 +65,29 @@ flowchart TB
   YOU -->|Telegram optional| APEX
   APEX -->|delegate| FORGE["FORGE — build"]
   APEX -->|delegate| PRISM["PRISM — research"]
-  APEX -->|spawn| SCOUT["SCOUT / …more"]
+  APEX -->|spawn| MORE["more agents…"]
   FORGE <--> PRISM
-  PRISM <--> SCOUT
-  FORGE <--> SCOUT
+  PRISM <--> MNEM["MNEMOSYNE — wiki"]
+  FORGE <--> MNEM
+  APEX -->|consult| MNEM
 ```
 
 All comms are **tmux paste-buffer** injection — no extra services, HTTP, or queues.
+
+---
+
+## Memory (experimental): Mnemosyne
+
+This repo ships a fourth agent — **Mnemosyne** — as an **optional experiment** in **fleet + project memory**. It does **not** replace Prism’s `prism/memory/shared.md` (quick shared notices); it **adds** a structured wiki:
+
+| Surface | Owner | Role |
+|---------|-------|------|
+| `prism/memory/shared.md` | Prism | Short, analyst-curated fleet notices |
+| `mnemosyne/memory/fleet-wiki/` | Mnemosyne | Obsidian-style vault: **`00-MOC-Fleet.md`**, **`fleet/`**, **`projects/<slug>/`**, `[[wikilinks]]` |
+
+**Apex** follows **`apex/skills/wiki-memory.md`** for when to **`/delegate mnemosyne`** vs updating `shared.md`. **Forge** may pull project context from the vault; **Prism** may **REQUEST** promotion of durable narrative into the vault. Same **tmux** transport; Mnemosyne is on every **`comms/roster.sh`** and is started by **`apex/scripts/ensure-fleet-up.sh`** like other non–forge/prism agents (plain `opencode` in `mnemosyne/`).
+
+If you do not want this experiment, remove **`mnemosyne`** from **`apex/comms/roster.sh`** and delete the `mnemosyne/` tree — the core three-agent fleet still works.
 
 ---
 
@@ -103,7 +120,7 @@ Goal: **clone → `./start.sh` → attach to Apex** — no manual env file step.
 
    On first run, **`start.sh` creates `.env` from `.env.example`** if `.env` is missing — you do **not** copy anything by hand. Local use needs no edits; the file is there for when you add Telegram later.
 
-   This launches **Apex** in tmux. **Forge** and **Prism** spin up when Apex needs them — not in this script.
+   This launches **Apex** in tmux. **`start.sh` does not start Forge, Prism, or Mnemosyne** — Apex runs **`scripts/ensure-fleet-up.sh` on each user message** so roster peers (including Mnemosyne) get a tmux session before delegating.
 
 3. **Talk to Apex**
 
@@ -148,7 +165,7 @@ You can use **Telegram-only** for chat if Apex is already running — no tmux at
 
 ```bash
 ./status.sh   # which tmux sessions are up
-./stop.sh     # graceful prompt, then stops apex / forge / prism / fleet-telegram
+./stop.sh     # graceful prompt, then stops apex / forge / prism / mnemosyne / fleet-telegram
 ```
 
 ---
@@ -161,6 +178,7 @@ fleet/
   apex/      # Lead agent — AGENT.md, skills, scripts/ensure-fleet-up.sh, memory, comms
   forge/     # Builder
   prism/     # Analyst + shared knowledge file
+  mnemosyne/ # Optional — fleet wiki + per-project memory (experiment)
   telegram/  # Optional bridge (Grammy) + MCP for replies
 ```
 
@@ -170,11 +188,11 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 
 ## Memory
 
-**Per agent:** each node has a `memory/` folder — **`bootstrap.md`** (context on boot), **`handoff.md`** (state you want next session to inherit), **`log.md`** (running trail). The agents write these as they work; you are not expected to curate them by hand unless you want to peek under the hood.
+**Per agent:** each node has a `memory/` folder — **`bootstrap.md`**, **`handoff.md`**, **`log.md`**. The agents write these as they work.
 
-**Fleet-wide:** Prism curates **`prism/memory/shared.md`** — a shared surface the other agents read; treat it as the fleet’s lightweight wiki / notice board.
+**Fleet-wide (Prism):** **`prism/memory/shared.md`** — lightweight notice board (see [Memory (experimental): Mnemosyne](#memory-experimental-mnemosyne) for the structured wiki add-on).
 
-**Example, not scripture.** This layout is the **starter** wiring for OpenCode Fleet Lite. If you already have a preferred OpenCode memory pattern — different files, tooling, or habits — **ask Apex** to propagate it across the fleet and **update the skills** so Forge, Prism, and anyone spawned later all follow the same contract. Apex coordinates the retune; after that, you are on **your** memory setup, not ours.
+**Example, not scripture.** If you prefer a different memory pattern — **ask Apex** to retune **`skills/`** across the fleet.
 
 ---
 

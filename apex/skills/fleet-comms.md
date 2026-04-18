@@ -18,6 +18,7 @@ Examples:
 ```bash
 ./comms/send.sh forge "Build a REST API with user auth. Use Express + SQLite."
 ./comms/send.sh prism "Research the best auth libraries for Node.js. Report back."
+./comms/send.sh mnemosyne "REQUEST | Add ADR note for auth choice; link from fleet-wiki MOC. END"
 ./comms/send.sh forge "What's the status on the API build?"
 ```
 

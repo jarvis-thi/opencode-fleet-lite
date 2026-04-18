@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SESSIONS=(apex forge prism fleet-telegram)
+SESSIONS=(apex forge prism mnemosyne fleet-telegram)
 
 echo "=== Stopping OpenCode Fleet Lite ==="
 echo ""
 
 # Send graceful handoff request to agent sessions
-for session in apex forge prism; do
+for session in apex forge prism mnemosyne; do
   if tmux has-session -t "$session" 2>/dev/null; then
     echo "[$session] Sending handoff request..."
     tmux send-keys -t "$session" "Save your state and prepare for shutdown." Enter
