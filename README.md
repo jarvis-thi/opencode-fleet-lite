@@ -2,6 +2,8 @@
 
 A small **example** drop-in fleet of three **OpenCode** agents that work together on your machine. Configure once, run `./start.sh`, then talk to the fleet in **one** place: **`tmux attach -t apex`**, or **Telegram** if you enable the optional bridge. **Apex** is the lead — Forge, Prism, and any agents you add later coordinate through that node so the fleet can ship work as a team.
 
+**KISS — Keep It Simple, Stupid:** coordination is intentionally boring on purpose. Each agent is a **tmux** session; agents reach each other by **paste-buffer injection** — plain text dropped into the peer’s terminal — not a bespoke message bus, not another service to babysit. **That is why this stack is tmux-first:** fewer moving parts, easier to read, trivial to debug in a scrollback.
+
 **Lite on purpose:** there is **no** systemd and **no** watchdog to resurrect sessions after a reboot or a killed tmux pane. Detach when you are done (`Ctrl+B`, then `D`); whatever you leave running is what stays up. That keeps the repo easy to read and adapt without ops glue in the way.
 
 Use it to learn the pattern — separate agent nodes, skills, and messages passing between them — then take it further: new roles, more agents, or your own hardening when you are ready.
@@ -47,7 +49,7 @@ You only message **Apex**. Inside the fleet, **any agent can message any agent**
 ## Prerequisites
 
 - **OpenCode** installed and working, with **your LLM configured** (check with `opencode --version` and your usual provider setup).
-- **tmux** — required; agents run inside tmux sessions.
+- **tmux** — required; it is the **KISS** transport for agent-to-agent comms (see [How fleet comms work](#how-fleet-comms-work) at the end).
 - **Optional — for Telegram:** Node.js 20+ and npm (only if you enable the bridge).
 
 ---
@@ -155,6 +157,34 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 | Change tone or rules | Edit each agent’s `AGENT.md` |
 | Change models | Your OpenCode / environment config (this repo does not pin a model) |
 | Add another agent | Ask Apex to use **`/spawn-agent`** (see `apex/skills/spawn-agent.md`) |
+
+---
+
+## How fleet comms work
+
+**Idea:** each agent runs **OpenCode inside its own tmux session** (`apex`, `forge`, `prism`, or whatever you spawned). To contact another agent, the sender runs **`comms/send.sh`** from its tree — the script resolves the target session, formats a line, and **injects it with tmux** (buffer + paste into the peer’s pane). The peer sees new text appear as if it arrived on the wire; no broker, no extra port — **the terminal is the inbox.**
+
+**Message shape** (same vocabulary for every agent):
+
+```
+[Sender to Receiver] TYPE | body text… END
+```
+
+**Types:**
+
+| Type | Meaning |
+|------|---------|
+| **REQUEST** | Do something — receiver should **ACK** |
+| **REPORT** | Status, result, or findings |
+| **ACK** | Got it — **never ACK an ACK** |
+| **ESCALATE** | Needs a human |
+| **INFO** | FYI only |
+
+Every message ends with **`END`** so boundaries stay obvious in a busy terminal.
+
+**Mesh:** any agent can message any agent (not only Apex → others). You still talk to **Apex** as the human-facing lead; under the hood, Forge can ping Prism, Prism can ping Apex, and so on — all with the same pattern.
+
+That is the whole transport story — **KISS**, inspectable, grep-friendly.
 
 ---
 
