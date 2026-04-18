@@ -1,8 +1,12 @@
 # opencode-fleet-lite
 
-A small, drop-in **fleet of three OpenCode agents** that work together from your machine. Configure once, run `./start.sh`, and talk to the fleet through **one** terminal session: **Apex**, the lead agent.
+A small **example** drop-in fleet of three **OpenCode** agents that work together on your machine. Configure once, run `./start.sh`, then talk to the fleet in **one** place: **`tmux attach -t apex`**, or **Telegram** if you enable the optional bridge. **Apex** is the lead — Forge, Prism, and any agents you add later coordinate through that node so the fleet can ship work as a team.
 
-Built for [OpenCode](https://github.com/sst/opencode). Uses **your** existing OpenCode / LLM setup (model choice is not duplicated here).
+**Lite on purpose:** there is **no** systemd and **no** watchdog to resurrect sessions after a reboot or a killed tmux pane. Detach when you are done (`Ctrl+B`, then `D`); whatever you leave running is what stays up. That keeps the repo easy to read and adapt without ops glue in the way.
+
+Use it to learn the pattern — separate agent nodes, skills, and messages passing between them — then take it further: new roles, more agents, or your own hardening when you are ready.
+
+Built for [OpenCode](https://github.com/sst/opencode). Model choice lives in **your** OpenCode setup, not in this repo.
 
 ---
 
