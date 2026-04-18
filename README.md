@@ -147,10 +147,7 @@ Only your chat ID can talk to the bot. Secure by default.
 
 **Change personalities:** Edit `*/AGENT.md`
 
-**Change models:** Edit `*/opencode.json` or set in `.env`:
-```bash
-OPENCODE_MODEL=anthropic/claude-sonnet-4    # Or any model
-```
+**Change models:** Uses whatever model you have configured in OpenCode. No separate config needed.
 
 **Add a 4th agent:** Copy any agent folder, edit AGENT.md, add to the roster in each agent's comms config.
 
