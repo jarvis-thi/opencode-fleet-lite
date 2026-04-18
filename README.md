@@ -130,7 +130,7 @@ You can use **Telegram-only** for chat if Apex is already running — no tmux at
 ```
 fleet/
   start.sh   stop.sh   status.sh   .env
-  apex/      # Lead agent — system prompt, skills, memory, comms helpers
+  apex/      # Lead agent — AGENT.md, skills (spawn-agent, tune-fleet, …), memory, comms
   forge/     # Builder
   prism/     # Analyst + shared knowledge file
   telegram/  # Optional bridge (Grammy) + MCP for replies
@@ -152,11 +152,19 @@ Per-agent details live next to each agent (`AGENT.md`, `opencode.json`, `memory/
 
 ## Customization
 
-| Goal | Where to look |
-|------|----------------|
-| Change tone or rules | Edit each agent’s `AGENT.md` |
-| Change models | Your OpenCode / environment config (this repo does not pin a model) |
-| Add another agent | Ask Apex to use **`/spawn-agent`** (see `apex/skills/spawn-agent.md`) |
+**Specialists live in `skills/`:** each agent has a `skills/` folder of small markdown playbooks. That is how a generic node becomes a **specialist** — tighter reviews, domain checklists, custom delegation habits — **without** forking OpenCode.
+
+**Work with Apex — you do not have to edit everything by hand.** Ask Apex to:
+
+| Ask for… | What Apex does |
+|----------|----------------|
+| **Sharpen an agent** | Refine `AGENT.md`, add or rewrite **`skills/*.md`**, align voice and responsibilities (Forge as release engineer, Prism as threat analyst, …). |
+| **New capabilities** | Create new skill files under the right agent’s `skills/`, wire them into how that agent should behave. |
+| **Improvement loops** | Set up habits: what to log after a task, when to update **`prism/memory/shared.md`**, retros, “what we learned” nudges — encoded as skills + memory, not buzzwords. |
+| **A brand-new node** | **`/spawn-agent`** — new folder, tmux session, roster (see `apex/skills/spawn-agent.md`). |
+| **Evolve the fleet you have** | **`/tune-fleet`** — Apex updates agents in place; see `apex/skills/tune-fleet.md`. |
+
+**Models and tone at the engine level** still come from **your** OpenCode config. **Persona and fleet behavior** come from **`AGENT.md` + skills** — and Apex is the partner for rolling those forward.
 
 ---
 

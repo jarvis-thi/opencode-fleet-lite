@@ -17,7 +17,7 @@ Delegate a task to a fleet agent.
 1. Validate the target agent exists in the roster (forge, prism).
 2. Compose a structured message:
    ```
-   [Apex to <Agent>] TASK | <task description> END
+   [Apex to <Agent>] REQUEST | <task description> END
    ```
 3. Send via `comms/send.sh <agent> "<message>"`.
 4. Log the delegation in `memory/log.md` with timestamp.
