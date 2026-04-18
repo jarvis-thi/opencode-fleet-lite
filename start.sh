@@ -7,14 +7,24 @@ cd "$FLEET_DIR"
 echo "=== OpenCode Fleet Lite ==="
 echo ""
 
+# Bootstrap .env from template so users never copy by hand
+if [[ ! -f .env ]]; then
+  if [[ -f .env.example ]]; then
+    cp .env.example .env
+    echo "[config] Created .env from .env.example (local-only defaults)"
+    echo "[config] Edit .env when you want Telegram — then npm install in telegram/bridge and run ./start.sh again"
+  else
+    echo "[config] No .env or .env.example — continuing without env file"
+  fi
+fi
+
 # Source config
 if [[ -f .env ]]; then
   set -a
+  # shellcheck disable=SC1091
   source .env
   set +a
   echo "[config] Loaded .env"
-else
-  echo "[config] No .env found -- using environment defaults"
 fi
 
 export FLEET_DIR

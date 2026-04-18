@@ -54,9 +54,9 @@ You only message **Apex**. Inside the fleet, **any agent can message any agent**
 
 ## Install and run
 
-Goal: **get Apex running in a minute**, attach once, and **try a few requests** so you feel how delegation and replies flow. **Telegram is optional** — add it later if you want the same experience from your phone.
+Goal: **clone → `./start.sh` → attach to Apex** — no manual env file step. **`start.sh` creates `.env` from `.env.example` the first time** if needed. **Telegram is optional** — edit `.env` only when you want the bridge.
 
-### Quick start (local — recommended first)
+### Quick start (three steps)
 
 1. **Clone and enter the repo**
 
@@ -65,23 +65,17 @@ Goal: **get Apex running in a minute**, attach once, and **try a few requests** 
    cd fleet
    ```
 
-2. **Optional env file** — create an empty config so `./start.sh` can source it (or copy the example):
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   For local-only use you can leave **Telegram variables blank**.
-
-3. **Start the fleet**
+2. **Start the fleet**
 
    ```bash
    ./start.sh
    ```
 
+   On first run, **`start.sh` creates `.env` from `.env.example`** if `.env` is missing — you do **not** copy anything by hand. Local use needs no edits; the file is there for when you add Telegram later.
+
    This launches **Apex** in tmux. **Forge** and **Prism** spin up when Apex needs them — not in this script.
 
-4. **Talk to Apex**
+3. **Talk to Apex**
 
    ```bash
    tmux attach -t apex
@@ -89,7 +83,7 @@ Goal: **get Apex running in a minute**, attach once, and **try a few requests** 
 
    Chat with Apex using your normal OpenCode workflow. Ask something small to start with (e.g. *“Summarise what this fleet can do”* or *“What would you delegate to Forge vs Prism?”*), then try a slightly larger task and watch Apex route work.
 
-5. **Detach** without killing the session: **Ctrl+B**, then **D**.
+**Detach** without killing the session: **Ctrl+B**, then **D**.
 
 That is enough to **see how things work** — Apex coordinates, other agents join when needed, and you stay in one session.
 
@@ -103,16 +97,18 @@ That is enough to **see how things work** — Apex coordinates, other agents joi
 
 That applies **in tmux** (everything you read in the Apex pane) and, if you enable Telegram, **on Telegram** too (Apex replies via the bridge — not silent side effects).
 
-### Optional: Telegram (after you are happy locally)
+### Optional: Telegram (only when you want it)
 
-1. Create a bot token and allowlisted chat id; put them in `.env` (see `.env.example`).
-2. Install bridge deps once:
+Skip this until you care about phone access. **`./start.sh` already created `.env`** — open it and set **`TELEGRAM_BOT_TOKEN`** and **`TELEGRAM_CHAT_ID`** (from @BotFather and your chat id).
 
-   ```bash
-   cd telegram/bridge && npm install && cd ../..
-   ```
+Then:
 
-3. Run `./start.sh` again — it starts **`fleet-telegram`** alongside Apex. Messages hit Apex the same way as in tmux; Apex should **still** ack, announce delegations, and close the loop when work completes.
+```bash
+cd telegram/bridge && npm install && cd ../..
+./start.sh
+```
+
+That starts **`fleet-telegram`** if the token is set. Messages hit Apex the same way as in tmux; Apex should **still** ack, announce delegations, and close the loop when work completes.
 
 You can use **Telegram-only** for chat if Apex is already running — no tmux attach required — but Apex must be up.
 
