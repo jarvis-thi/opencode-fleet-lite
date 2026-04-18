@@ -30,29 +30,29 @@ Forge and Prism come up when Apex needs them; you stay in **Apex** unless you *w
 You only message **Apex**. Inside the fleet, **any agent can message any agent** — Forge can ask Prism for a review, Prism can nudge Apex for a decision, and so on. Apex remains your single front door; behind it, the team is a **mesh**, not a strict ladder.
 
 ```
-                    +-----------+
-                    |    YOU    |
-                    +-----------+
-                     /         \
-          tmux attach    Telegram
-              |          (optional)
-              v              v
-        +===========================+
-        |          APEX             |
-        |    strategist / lead      |
-        |  plans, delegates, spawns |
-        +===========================+
-           /        |         \
-     delegate    delegate    spawn
-         /          |           \
-   +--------+  +--------+  +--------+
-   | FORGE  |  | PRISM  |  | SCOUT  |  ...more
-   | build  |  | research|  | (new)  |
-   +--------+  +--------+  +--------+
-        \          |          /
-         \    direct comms   /
-          +--- any <-> any --+
-            (tmux injection)
+                         +-----------+          
+                         |    YOU    |          
+                         +-----------+          
+                          /         \           
+            tmux attach       Telegram (opt.)   
+                  |                   |         
+                  v                   v         
+             +=============================+    
+             |            APEX             |    
+             |      strategist / lead      |    
+             |  plans, delegates, spawns   |    
+             +=============================+    
+                /          |          \         
+          delegate     delegate     spawn       
+              /          |            \         
+        +----------+  +----------+  +----------+
+        |  FORGE   |  |  PRISM   |  |  SCOUT   |
+        |  build   |  | research |  |  (new)   |
+        +----------+  +----------+  +----------+
+             \            |            /        
+              \     direct comms      /         
+               +--- any <-> any -----+          
+                  (tmux injection)              
 ```
 
 Same structure in **Mermaid** (renders on GitHub):
