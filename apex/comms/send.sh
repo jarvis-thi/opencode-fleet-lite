@@ -25,6 +25,8 @@ fi
 
 # Format and inject message
 FORMATTED="[$SENDER to ${TARGET^}] $MESSAGE"
-tmux set-buffer -t "$SESSION" "$FORMATTED" \; paste-buffer -t "$SESSION" \; send-keys -t "$SESSION" Enter
+tmux set-buffer -t "$SESSION" "$FORMATTED" \; paste-buffer -t "$SESSION"
+sleep 0.5
+tmux send-keys -t "$SESSION" Enter
 
 echo "Sent to $TARGET ($SESSION)"
