@@ -26,10 +26,9 @@ You  ──►  Apex (lead)  ──►  Forge / Prism / spawned agents
 
 ## Prerequisites
 
-- **OpenCode** installed and working (`opencode --version`)
-- **tmux**
-- An **LLM API key** available to OpenCode (however you already configure OpenCode)
-- **Optional — Telegram:** Node.js 20+ and `npm` (only if you enable the bridge)
+- **OpenCode** installed and working, with **your LLM configured** (check with `opencode --version` and your usual provider setup).
+- **tmux** — required; agents run inside tmux sessions.
+- **Optional — for Telegram:** Node.js 20+ and npm (only if you enable the bridge).
 
 ---
 
