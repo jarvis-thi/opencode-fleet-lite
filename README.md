@@ -35,7 +35,9 @@ tmux attach -t apex
 
 **Before `./start.sh`:** install **tmux** and **OpenCode** so both `tmux -V` and **`opencode --version`** work in the same terminal you use for the fleet (macOS: `brew install tmux`, then install OpenCode per its docs). If **`opencode` is not on your PATH**, the Apex pane exits straight away, tmux tears down the last session, and the next command moans about **no server / no sessions** — that is almost always “CLI not found or crashed,” not a broken script.
 
-First run creates a `.env` for you. Detach without murdering the session: **Ctrl+B**, then **D**.
+First run creates a `.env` for you.
+
+> **Living with tmux** — Detach cleanly: **Ctrl+B**, then **D**. You leave everything running; nothing dies because you closed a terminal tab. This stack is intentionally simple — sessions are just tmux panes, so try not to tear them down for sport. If a peer drops anyway, Apex’s usual sweep can bring the roster back on the next message. When you trust the setup and want reboots handled for you, graduate to **systemd + a watchdog** — see **Setting up systemd** below.
 
 Check what’s alive: `./status.sh`. Wind down: `./stop.sh`.
 
