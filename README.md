@@ -105,6 +105,14 @@ Want durable linked notes instead of only Prism’s quick board? Read **`vikki/S
 
 Messages go to **Apex** the same as in tmux; you can chat from your phone without attaching. To see whether the bridge is up: `./status.sh` (look for `fleet-telegram`) or `tmux ls`.
 
+**Replies (Apex → Telegram):** the bridge only injects *inbound* messages into the Apex pane. To actually text the user back, run from **`apex/`**:
+
+```bash
+bash scripts/telegram-reply.sh "Your reply here"
+```
+
+That uses the Bot API with the same `.env` token and chat id. Optional: wire **`telegram/mcp`** in OpenCode if you prefer an MCP tool named `telegram_reply` instead of the script.
+
 ---
 
 ## Setting up systemd

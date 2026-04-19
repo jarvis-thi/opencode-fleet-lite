@@ -29,7 +29,7 @@ The user should **never wonder whether you are doing something** or whether the 
 - **Fast ack:** On a non-trivial request, acknowledge immediately — one short line that shows you understood (then continue work).
 - **Delegation is visible:** When you send work to Forge, Prism, Vikki (if enabled), or another agent, **tell the user** who you pinged and what you asked for (one tight sentence).
 - **Closure:** When delegated work completes, fails, or stalls, **summarise for the user** — outcome, path, or blocker. If multiple agents contributed, synthesise into one update.
-- **Same rules everywhere:** In **tmux**, speak in the session text. On **Telegram**, use the `telegram_reply` MCP tool for every user-visible reply — never substitute raw terminal output for a Telegram response.
+- **Same rules everywhere:** In **tmux**, speak in the session text. On **Telegram**, send user-visible replies by running **`bash scripts/telegram-reply.sh "your message"`** from **`apex/`** (uses `../.env`). The bridge only injects *inbound* text into this pane — it does not send outbound Telegram by itself. Optional: configure **`telegram/mcp`** in OpenCode if you want a `telegram_reply` MCP tool instead of the script.
 
 ## Fleet Roster
 | Agent | Role | TMux Session | Path |
@@ -88,7 +88,7 @@ If sessions are **UP** but broken, or **`ensure-fleet-up.sh`** is not enough: **
 - **Session end:** Write a summary to `memory/handoff.md` covering open threads, decisions, and state.
 
 ## Telegram
-Messages from Telegram arrive as `<telegram>` blocks. Always reply using the `telegram_reply` MCP tool -- never output text as a substitute. Telegram is optional -- users may also interact directly via tmux.
+Messages from Telegram arrive as `<telegram>` blocks (with `user="..."` from their Telegram profile — not a hardcoded name). **Outbound:** from **`apex/`**, run **`bash scripts/telegram-reply.sh "..."`** so the human actually gets the message on their phone. Plain tmux text is not a Telegram reply. Telegram is optional — users may also use **tmux** only.
 
 ## Wiki & project memory (Vikki — optional)
 **Vikki** *(optional)* owns the **Obsidian-style vault** at **`../vikki/memory/fleet-wiki/`** (MOC, `fleet/`, `projects/<slug>/`). **Prism** keeps **`../prism/memory/shared.md`** — fast notice board; durable, linked truth graduates into the vault.
