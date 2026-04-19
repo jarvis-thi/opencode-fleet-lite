@@ -91,17 +91,13 @@ Want durable linked notes instead of only Prism’s quick board? Read **`vikki/S
    TELEGRAM_CHAT_ID=123456789
    ```
 
-4. **Install bridge deps once:**
-
-   ```bash
-   cd telegram/bridge && npm install && cd ../..
-   ```
-
-5. **Start (or restart) everything** — this launches Apex and, if `TELEGRAM_BOT_TOKEN` is set, the **fleet-telegram** tmux session:
+4. **Start (or restart) everything:**
 
    ```bash
    ./start.sh
    ```
+
+   With `TELEGRAM_BOT_TOKEN` set, **`start.sh` runs `npm install` in `telegram/bridge` automatically** the first time `node_modules` is missing (you need **Node.js + npm** on your PATH). You can still run `npm install` there yourself beforehand if you prefer.
 
 Messages go to **Apex** the same as in tmux; you can chat from your phone without attaching. To see whether the bridge is up: `./status.sh` (look for `fleet-telegram`) or `tmux ls`.
 

@@ -12,7 +12,7 @@ if [[ ! -f .env ]]; then
   if [[ -f .env.example ]]; then
     cp .env.example .env
     echo "[config] Created .env from .env.example (local-only defaults)"
-    echo "[config] Edit .env when you want Telegram — then npm install in telegram/bridge and run ./start.sh again"
+    echo "[config] Edit .env when you want Telegram — start.sh will npm install the bridge on first run when a token is set"
   else
     echo "[config] No .env or .env.example — continuing without env file"
   fi
@@ -87,14 +87,36 @@ for name in $(roster_all); do
   esac
 done
 
-# Start Telegram bridge (optional)
+# Start Telegram bridge (optional) — install npm deps automatically on first run
+ensure_telegram_bridge_deps() {
+  local d="$FLEET_DIR/telegram/bridge"
+  if [[ ! -f "$d/package.json" ]]; then
+    echo "[telegram] SKIP — missing $d/package.json" >&2
+    return 1
+  fi
+  if [[ -d "$d/node_modules" ]]; then
+    return 0
+  fi
+  if ! command -v npm >/dev/null 2>&1; then
+    echo "[error] TELEGRAM_BOT_TOKEN is set but npm is not on PATH." >&2
+    echo "        Install Node.js (LTS), then re-run ./start.sh" >&2
+    return 1
+  fi
+  echo "[telegram] Installing bridge dependencies (telegram/bridge, first run)..."
+  (cd "$d" && npm install)
+}
+
 if [[ -n "${TELEGRAM_BOT_TOKEN:-}" ]]; then
   if tmux has-session -t fleet-telegram 2>/dev/null; then
     echo "[telegram] Bridge already running -- skipping"
   else
-    echo "[telegram] Starting Telegram bridge..."
-    tmux new-session -d -s fleet-telegram -c "$FLEET_DIR/telegram/bridge" "node src/index.js"
-    echo "[telegram] Bridge started"
+    if ensure_telegram_bridge_deps; then
+      echo "[telegram] Starting Telegram bridge..."
+      tmux new-session -d -s fleet-telegram -c "$FLEET_DIR/telegram/bridge" "node src/index.js"
+      echo "[telegram] Bridge started"
+    else
+      echo "[telegram] Bridge not started — fix errors above" >&2
+    fi
   fi
 else
   echo "[telegram] No TELEGRAM_BOT_TOKEN set -- bridge disabled"
