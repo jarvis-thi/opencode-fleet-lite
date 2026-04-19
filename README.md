@@ -5,6 +5,7 @@
 > - A **simple example repo** for building a **fleet of agents** — real roles you name and keep, not a lottery of one-off sub-agents. Specialists that can grow with you.
 > - **KISS** — *Keep It Simple, Stupid.* This is what worked for me, packaged so you might steal it and make your day a little easier.
 > - **Imagination is the limit** — same pattern works for code, research, ops, creative stuff, chaos. Apply it to anything.
+> - **Tested on macOS and Linux** — both work with the same flow (tmux + OpenCode + optional Telegram bridge). Windows: use WSL2 or a Linux box.
 
 You need [OpenCode](https://github.com/sst/opencode) and **tmux**. Models live in *your* OpenCode config — this repo is just the crew.
 
