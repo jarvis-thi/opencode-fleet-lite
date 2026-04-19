@@ -15,7 +15,7 @@ You need [OpenCode](https://github.com/sst/opencode) and **tmux**. Models live i
 
 | Who | Job |
 |-----|-----|
-| **Apex** | Your **only** door. You talk here. Plans, splits work, nags people, reports back. |
+| **Apex** | Your **best** door. You talk here. Plans, splits work, nags people, reports back. |
 | **Forge** | Builds things — code, scripts, fixes. |
 | **Prism** | Thinks — research, reviews, notes. Keeps a short shared scratchpad the fleet can read. |
 | **Vikki** | Optional. Long-term wiki memory (markdown vault). Off by default — turn her on only if you want that. |
