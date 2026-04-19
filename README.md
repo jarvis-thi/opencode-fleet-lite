@@ -44,6 +44,13 @@ Check what’s alive: `./status.sh`. Wind down: `./stop.sh`.
 
 **You only chat with Apex.** Don’t hop into Forge’s pane unless you’re debugging — Apex is the coordinator.
 
+**When you first start**, get the hang of it with plain asks — no ceremony:
+
+- **Fleet health:** e.g. *“Is the fleet up? Who’s running?”* or *“Run a quick check that Apex, Forge, and Prism are alive and tell me.”* Apex can reason from tmux / `./status.sh` behaviour; you learn how it reports back.
+- **Inter-agent comms:** e.g. *“Ping Forge with a test message and confirm it ACKs”* or *“Have Prism send Forge a short INFO and report what happened.”* That exercises `comms/send.sh` and the mesh without real work yet.
+
+Then move on to real tasks once that feels familiar.
+
 - **Say what you want**, in normal words. Bad: “do the thing.” Good: “Add a health endpoint to `server.ts` and tell me what you changed.”
 - **Say who should do it** if you care — “have Forge implement it” or “have Prism review the auth module first.” If you don’t care, Apex picks.
 - **Ask for a plan** when it’s big — “break this into steps and tell me who does what.”
